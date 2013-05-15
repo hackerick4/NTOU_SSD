@@ -36,7 +36,9 @@ $con -> Get_current_courses(3, 6);
 	參數 : $fbID: FBID
 	           $want_send_courseID : 要送出的課程之ID
 			   $want_recieve_courseID : 想要得到課程之ID
-			       [如果不是要交換，want_recieve_courseID此參數可為NULL]
 */
-$con -> Post_a_course('123654987456214', 'M897542', 'B8547896')
+$con -> Post_a_course('123654987456214', 'M897542');
+
+
+$con -> Login('詹肥肥2號', '123456789987654', 'LoginSuccess11156');
 ?>

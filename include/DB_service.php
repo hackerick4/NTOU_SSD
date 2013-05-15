@@ -34,9 +34,28 @@
 		 // echo json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		  return json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		}
-	    function Post_a_course($fbID, $want_send_courseID, $want_recieve_courseID){
-			$newUser = array('fb_ID' => $fbID, 'send_course_ID' => $want_send_courseID , 'recieve_course_ID' =>$want_recieve_courseID, 'state' => 'ready');
-		    $this->DB->Insert($newUser,'current_posts');
+		
+		
+	    function Post_a_course($fbID, $want_send_courseID, $want_recieve_courseID='NULL'){
+			$newCourse = array('fb_ID' => $fbID, 'send_course_ID' => $want_send_courseID , 'recieve_course_ID' =>$want_recieve_courseID, 'state' => 'ready');
+		    $this->DB->Insert($newCourse,'current_posts');
 		}
+		
+		function Login($userName, $fbID, $FB_token){
+			 $fbID = $this->DB->SecureData($fbID);
+			 $dataArray = array();
+			 $dataArray = $this->DB->Select('user',"`fb_ID` = '{$fbID}'");
+			// print_r($dataArray);
+		if ($dataArray==1) { 
+		  // echo "新增使用者";
+		    $newUser= array('user_name' => $userName, 'fb_ID' => $fbID, 'login_token' => $FB_token);
+			$this->DB->Insert($newUser, 'user');
+			}else{ //the user have registered, just update the token
+			   $updateArray = array('login_token' => $FB_token);
+			   $conditionArray = array('fb_ID' => $fbID);
+			   $this -> DB -> Update('user',$updateArray,$conditionArray);
+			}
+		}
+		
 	}
 ?>
