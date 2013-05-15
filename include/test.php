@@ -37,8 +37,8 @@ $con -> Get_current_courses(3, 6);
 	           $want_send_courseID : 要送出的課程之ID
 			   $want_recieve_courseID : 想要得到課程之ID
 */
-$con -> Post_a_course('123654987456214', 'M897542');
+//$con -> Post_a_course('123654987456214', 'M897542');
 
-
-$con -> Login('詹肥肥2號', '123456789987654', 'LoginSuccess11156');
+$con -> Set_CoureRate('B1234567',6);
+//$con -> Login('詹肥肥2號', '123456789987654', 'LoginSuccess11156');
 ?>

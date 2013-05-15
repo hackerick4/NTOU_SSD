@@ -18,7 +18,8 @@
 			// echo json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 			return json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		}
-		function Get_course_rate($courseID){
+      
+	  function Get_course_rate($courseID){
 		     $courseID = $this->DB->SecureData($courseID);
 			 $dataArray = array();
 			 $dataArray = $this->DB->Select('course_info',"`course_ID` = '{$courseID}'");
@@ -57,5 +58,19 @@
 			}
 		}
 		
+		function Set_CoureRate($courseID,$newValue){
+		     $courseID = $this->DB->SecureData($courseID);
+			 $dataArray = array();
+			 $dataArray = $this->DB->Select('course_info',"`course_ID` = '{$courseID}'");
+			 $newValue = ($dataArray["rating"]+$newValue)/($dataArray["rateCount"]+1);
+			 //prepare var
+			 $newRatingArray = array('rating' => $newValue, 'rateCount' => $dataArray["rateCount"]+1);
+			  $conditionArray = array('course_ID' => $courseID);
+			 $this -> DB -> Update('course_info',$newRatingArray,$conditionArray);
+		}
+		
+		function Get_CourseID($courseName){
+			
+		}
 	}
 ?>
