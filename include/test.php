@@ -39,6 +39,9 @@ $con -> Get_current_courses(3, 6);
 */
 //$con -> Post_a_course('123654987456214', 'M897542');
 
-$con -> Set_CoureRate('B1234567',6);
+//$con -> Set_CoureRate('B1234567',6);
 //$con -> Login('詹肥肥2號', '123456789987654', 'LoginSuccess11156');
+//$con -> Get_CourseID('軟體工程');
+//$con -> Get_CourseName('B1234567');
+$con -> Get_personalURL('123456789123456','123456789987654');
 ?>

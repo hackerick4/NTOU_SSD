@@ -5,10 +5,9 @@
 		var $DB;
 	    var $result;
 		var $dataArray;
-		var $currentPostCountAt;
 		
 	  function SSD_DB_Service(){
-	            $currentPostCountAt =1;
+	            
 		        $this->DB = new MySQL('ssd', 'root','', 'localhost');
 		}
 		
@@ -70,7 +69,35 @@
 		}
 		
 		function Get_CourseID($courseName){
+			$courseName = $this -> DB -> SecureData($courseName);
+			$dataArray = array();
+			$dataArray = $this->DB->Select('course_info',"`course_name` = '{$courseName}'");
+			//echo $dataArray["course_ID"];
+			return $dataArray["course_ID"];
+		}
+		
+		function Get_CourseName($courseID){
+			$courseID = $this -> DB -> SecureData($courseID);
+			$dataArray = array();
+			$dataArray = $this->DB->Select('course_info',"`course_ID` = '{$courseID}'");
+			//echo $dataArray["course_name"];
+			return $dataArray["course_name"];
+		}
+		
+		function Get_personalURL ($want_person, $post_person){
+		    if ($want_person == $post_person) return '參數不可相同';
+		    // 查看post個人網址的人 權力點數需要-1
+		    $dataArray = array();
+			$dataArray = $this->DB->Select('user',"`fb_ID` = '{$want_person}'");
+			if ($dataArray['right_point']-1 < 0) return '權力點數不足';
+			$decreasePointArray = array ('right_point' => $dataArray['right_point']-1);
+			$decreaseConditionArray = array ('fb_ID' => $want_person);
+			$this -> DB -> Update('user',$decreasePointArray,$decreaseConditionArray);
 			
+			$dataArray = array();
+			$dataArray = $this->DB->Select('user',"`fb_ID` = '{$post_person}'");
+			//echo 'http://www.facebook.com/profile.php?id='.$dataArray['fb_ID'];
+			return 'http://www.facebook.com/profile.php?id='.$dataArray['fb_ID'];
 		}
 	}
 ?>
