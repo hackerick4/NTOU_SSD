@@ -5,21 +5,21 @@ include 'DB_service.php';
 /*SSD_DB_Service()  建構元*/
 $con = new SSD_DB_Service;
 
-/*Get_all_course()  取得全部的課程資訊
+/*getAllCourse()  取得全部的課程資訊
    回傳範例 : 
       [{"department":"資工系","course_ID":"B1234567","course_name":"軟體工程","course_time":"202,203,204","teacher":"馬上冰","rating":"2"},{"department":"商船系","course_ID":"B7654321","course_name":"微積分","course_time":"102,203,204","teacher":"程懷懷","rating":"4"}]
 */
-$con -> Get_all_course();  
+//$con -> getAllCourse();  
 /*
-   Get_course_rate($courseID)  取得某課程的評比分數
+   getCourseRate($courseID)  取得某課程的評比分數
    參數 : $courseID:課程ID
    回傳範例 : 2
 */
-$con -> Get_course_rate("B1234567");
+//$con -> getCourseRate("B1234567");
 
 
 /*
-   Get_current_courses($page, $count)
+   getCurrentCourses($page, $count)
    取得目前張貼的資訊
    參數 : $page : 第幾頁
               $count : 需要幾筆
@@ -29,19 +29,20 @@ $con -> Get_course_rate("B1234567");
 	回傳範例 : [{"fb_ID":"123456789123456","post_time":"2013-05-13 02:12:04","send_course_ID":"B1234567","state":"ready","recieve_course_ID":"B7654321","PostID":"1"},{"fb_ID":"123654987456214","post_time":"2013-05-15 00:29:41","send_course_ID":"M897542","state":"ready","recieve_course_ID":"B8547896","PostID":"4"}]
 	
 */
-$con -> Get_current_courses(3, 6);
+//$con -> getCurrentCourses(1, 6);
 
-/* Post_a_course($fbID, $want_send_courseID, $want_recieve_courseID)
+/* postACourse($fbID, $want_send_courseID, $want_recieve_courseID)
     張貼一則新資訊
 	參數 : $fbID: FBID
 	           $want_send_courseID : 要送出的課程之ID
 			   $want_recieve_courseID : 想要得到課程之ID
 */
-//$con -> Post_a_course('123654987456214', 'M897542');
+//$con -> postACourse('123456789569874', 'M897542');
 
-//$con -> Set_CoureRate('B1234567',6);
+$con -> setCoutseRate('123456789987654','B1234888',3);
 //$con -> Login('詹肥肥2號', '123456789987654', 'LoginSuccess11156');
-//$con -> Get_CourseID('軟體工程');
-//$con -> Get_CourseName('B1234567');
-$con -> Get_personalURL('123456789123456','123456789987654');
+//$con -> getCourseID('軟體工程');
+//$con -> getCourseName('B1234567');
+//$con -> getPersonalURL('123456789123456','123456789987654');
+//$con -> getRatedCourses('123456789123456');
 ?>

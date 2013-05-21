@@ -175,17 +175,30 @@ class MySQL {
 
 
 	// Gets a single row from $from where $where is true
-	function Select($from, $where='', $orderBy='',$limit=''){
+	function Select($from, $where='', $orderBy='', $limit='', $like=false, $operand='AND'){
 		// Catch Exceptions
 		if(trim($from) == ''){
 			return false;
 		}
 
 		$query = "SELECT * FROM `{$from}` WHERE ";
-    //   echo $query;
-		if( $where != ''){
+
+		if(is_array($where) && $where != ''){
 			// Prepare Variables
-            $query .= $where;
+			$where = $this->SecureData($where);
+
+			foreach($where as $key=>$value){
+				if($like){
+					//$query .= '`' . $key . '` LIKE "%' . $value . '%" ' . $operand . ' ';
+					$query .= "`{$key}` LIKE '%{$value}%' {$operand} ";
+				}else{
+					//$query .= '`' . $key . '` = "' . $value . '" ' . $operand . ' ';
+					$query .= "`{$key}` = '{$value}' {$operand} ";
+				}
+			}
+
+			$query = substr($query, 0, -(strlen($operand)+2));
+
 		}else{
 			$query = substr($query, 0, -7);
 		}
@@ -193,11 +206,14 @@ class MySQL {
 		if($orderBy != ''){
 			$query .= ' ORDER BY ' . $orderBy;
 		}
+
 		if($limit != ''){
 			$query .= ' LIMIT ' . $limit;
 		}
-         return $this->ExecuteSQL($query);
-}
+
+		return $this->ExecuteSQL($query);
+
+	}
 
 	// Updates a record in the database based on WHERE
 	function Update($table, $set, $where, $exclude = ''){
