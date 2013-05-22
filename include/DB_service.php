@@ -2,13 +2,9 @@
     header("Content-Type:text/html; charset=utf-8");
 	include 'sql.php';
 	class SSD_DB_Service{
-		var $DB;
-	    var $result;
-		var $dataArray;
 		
 	  function SSD_DB_Service(){
-	            
-		        $this->DB = new MySQL('ssd', 'root','', 'localhost');
+	            $this->DB = new MySQL('ssd', 'root','', 'localhost');
 		}
 		
         function getAllCourse(){
@@ -39,25 +35,19 @@
 		  return json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		}
 		
-		
 	    function postACourse($fbID, $want_send_courseID, $want_recieve_courseID='NULL'){
 			$newCourse = array('fb_ID' => $fbID, 'send_course_ID' => $want_send_courseID , 'recieve_course_ID' =>$want_recieve_courseID, 'state' => 'ready');
 		    $this->DB->Insert($newCourse,'current_posts');
 		}
 		
-		function Login($userName, $fbID, $FB_token){
-			 $fbID = $this->DB->SecureData($fbID);
+		function Login($userName, $fbID){
+			 $parameterArray = array ('fb_ID' => $fbID);
 			 $dataArray = array();
-			 $dataArray = $this->DB->Select('user',"`fb_ID` = '{$fbID}'");
-			// print_r($dataArray);
+			 $dataArray = $this->DB->Select('user',$parameterArray);
 		if ($dataArray==1) { 
-		  // echo "新增使用者";
-		    $newUser= array('user_name' => $userName, 'fb_ID' => $fbID, 'login_token' => $FB_token);
+		  //新增使用者
+		    $newUser= array('user_name' => $userName, 'fb_ID' => $fbID);
 			$this->DB->Insert($newUser, 'user');
-			}else{ //the user have registered, just update the token
-			   $updateArray = array('login_token' => $FB_token);
-			   $conditionArray = array('fb_ID' => $fbID);
-			   $this -> DB -> Update('user',$updateArray,$conditionArray);
 			}
 		}
 		
@@ -67,9 +57,10 @@
 			 $dataArray = array();
 			 $dataArray = $this->DB->Select('user',$parameterArray);
 			 if (strstr($dataArray['ratedCourses'],$courseID)) 
-				return "the course has been rated";
+				return "已經評比過該課程";
 			 $newRatedCourses = array ('ratedCourses' => $dataArray['ratedCourses']. "," .$courseID);
 		     $this -> DB -> Update('user',$newRatedCourses,$parameterArray);
+			 
 			 //count the rate avg and set the rate
 		     $parameterArray = array ('course_ID' => $courseID);
 			 $dataArray = array();
@@ -84,17 +75,17 @@
 		}
 		
 		function getCourseID($courseName){
-			$courseName = $this -> DB -> SecureData($courseName);
-			$dataArray = array();
-			$dataArray = $this->DB->Select('course_info',"`course_name` = '{$courseName}'");
+		     $parameterArray = array ('course_name' => $courseName);
+			 $dataArray = array();
+			 $dataArray = $this->DB->Select('course_info',$parameterArray);
 			//echo $dataArray["course_ID"];
 			return $dataArray["course_ID"];
 		}
 		
 		function getCourseName($courseID){
-			$courseID = $this -> DB -> SecureData($courseID);
-			$dataArray = array();
-			$dataArray = $this->DB->Select('course_info',"`course_ID` = '{$courseID}'");
+		     $parameterArray = array ('course_ID' => $courseID);
+			 $dataArray = array();
+			 $dataArray = $this->DB->Select('course_info',$parameterArray);
 			//echo $dataArray["course_name"];
 			return $dataArray["course_name"];
 		}
@@ -102,26 +93,36 @@
 		function getPersonalURL ($want_person, $post_person){
 		    if ($want_person == $post_person) return '參數不可相同';
 		    // 查看post個人網址的人 權力點數需要-1
-		    $dataArray = array();
-			$dataArray = $this->DB->Select('user',"`fb_ID` = '{$want_person}'");
+		    $parameterArray = array ('fb_ID' => $want_person);
+			$dataArray = array();
+			$dataArray = $this->DB->Select('user',$parameterArray);
 			if ($dataArray['right_point']-1 < 0) return '權力點數不足';
 			$decreasePointArray = array ('right_point' => $dataArray['right_point']-1);
 			$decreaseConditionArray = array ('fb_ID' => $want_person);
 			$this -> DB -> Update('user',$decreasePointArray,$decreaseConditionArray);
 			
+			$parameterArray = array ('fb_ID' => $post_person);
 			$dataArray = array();
-			$dataArray = $this->DB->Select('user',"`fb_ID` = '{$post_person}'");
+			$dataArray = $this->DB->Select('user',$parameterArray);
 			//echo 'http://www.facebook.com/profile.php?id='.$dataArray['fb_ID'];
 			return 'http://www.facebook.com/profile.php?id='.$dataArray['fb_ID'];
 		}
 		
 		function getRatedCourses($fbID){
-			$fbID = $this->DB->SecureData($fbID);
+			$parameterArray = array ('fb_ID' => $fbID);
 			$dataArray = array();
-			$dataArray = $this->DB->Select('user',"`fb_ID` = '{$fbID}'");
+			$dataArray = $this->DB->Select('user',$parameterArray);
 			$ratedCourses_string = $dataArray["ratedCourses"];
-			print_r ($ratedCourses_string);
+			//print_r ($ratedCourses_string);
+			$ratedCoursesArray = array();
+			$token = strtok($ratedCourses_string,',');
+			array_push($ratedCoursesArray,$token);
+			while ( $token = strtok(','))    array_push($ratedCoursesArray,$token);
+			//print_r ($ratedCoursesArray);
+			return $ratedCoursesArray;
 		}
+		
+		
 	
 	}
 ?>
