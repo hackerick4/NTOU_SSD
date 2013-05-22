@@ -12,5 +12,6 @@ $con = new SSD_DB_Service;
 //$con -> getCourseID('軟體工程');
 //$con -> getCourseName('B1234567');
 //$con -> getPersonalURL('123456789123456','123456789987654');
-$con -> getRatedCourses('123456789123456');
+//$con -> getRatedCourses('123456789123456');
+$con -> fuzzySearch('軟工');
 ?>

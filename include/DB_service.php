@@ -122,6 +122,58 @@
 			return $ratedCoursesArray;
 		}
 		
+		function fuzzySearch($fuzzyString){
+		  $dataArray = array();
+		  $dataArray = $this->DB->Select('course_info');
+		  $resultArray = array();
+		  foreach  ($dataArray as $row){
+			if (  $this->compareWithWord($row['course_name'],$fuzzyString) <= abs(mb_strlen($fuzzyString, 'utf-8') - mb_strlen($row['course_name'], 'utf-8') ) )
+				array_push($resultArray,$row['course_name']);
+			}
+		  return $resultArray;
+		}
+		
+		private function compareWithWord($stringA,$stringB){
+			//prepare var
+			$stringA_len = mb_strlen($stringA, 'utf-8');
+			$stringB_len = mb_strlen($stringB, 'utf-8');
+			$distance_table = array();
+		    //setup distance table
+		    for ($i=0 ; $i < $stringA_len * $stringB_len; ++$i) $distance_table[ $i ] = 0;
+			//print_r($distance_table);
+		    //start to count  Levenshtein_Distance
+			if( $stringA_len++ != 0 && $stringB_len++ != 0 ) {
+			    for ( $k = 0; $k < $stringA_len; $k++)  $distance_table[$k] = $k;
+                for ( $k = 0; $k < $stringB_len; $k++ )  $distance_table[ $k * $stringA_len ] = $k;
+        
+				for ( $i = 1; $i < $stringA_len; $i++ )
+					for ( $j = 1; $j < $stringB_len; $j++ ) {
+                        if( $stringA [ $i ]== $stringB [  $j  ] )  $cost = 0;
+						else $cost = 1;
+                        
+                         $distance_table[ $j * $stringA_len + $i ] =  $this->smallest(
+						                           $distance_table[ ($j - 1) * $stringA_len + $i ] + 1,
+												   $distance_table [ $j * $stringA_len + $i - 1 ] +  1,
+												   $distance_table[ ($j - 1) * $stringA_len + $i -1 ] + $cost 
+													);
+	            }
+		
+        $distance = $distance_table[ $stringA_len * $stringB_len - 1 ];
+	     return $distance;
+		}
+		return 0;
+		}
+		
+		
+		private function smallest($a,$b,$c){
+			  $min = $a;
+			  if ( $b < $min )
+					$min = $b;
+              if( $c < $min )
+				$min = $c;
+			return $min;
+		}
+		
 		
 	
 	}
