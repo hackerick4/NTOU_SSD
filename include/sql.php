@@ -191,8 +191,11 @@ class MySQL {
 				if($like){
 					//$query .= '`' . $key . '` LIKE "%' . $value . '%" ' . $operand . ' ';
 					$query .= "`{$key}` LIKE '%{$value}%' {$operand} ";
-				}else{
+				}else if (strpos ($value, '>')){
 					//$query .= '`' . $key . '` = "' . $value . '" ' . $operand . ' ';
+					$value = substr($value,2,strlen($value)-2);
+					$query .= "`{$key}` <>'{$value}' {$operand} ";
+				}else{
 					$query .= "`{$key}` = '{$value}' {$operand} ";
 				}
 			}
@@ -210,7 +213,7 @@ class MySQL {
 		if($limit != ''){
 			$query .= ' LIMIT ' . $limit;
 		}
-
+        //print_r($query);
 		return $this->ExecuteSQL($query);
 
 	}

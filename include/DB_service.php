@@ -24,21 +24,51 @@
 			 return  $dataArray["rating"];
 		}
 		
-		function getCurrentCourses($page, $count){
+		function getCurrentCourses($page, $count,$type){
 		   $dataArray = array();
 		   $from = $count*($page-1);
 		   $to = $page*$count;
-		  $dataArray = $this->DB->Select('current_posts');
+		   $conditionArray= array();
+		   if ($type == 'exchange') $conditionArray = array ('recieve_course_ID' => 'none');
+		   else if ($type == 'transaction') $conditionArray =  array ('recieve_course_ID' => '<>none');
+		  $dataArray = $this->DB->Select('current_posts',$conditionArray);
 		  $dataArray = array_slice($dataArray,$from,$count);
-		  //print_r ($dataArray);
+		 // print_r ($dataArray);
 		 // echo json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		  return json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		}
-		
-	    function postACourse($fbID, $want_send_courseID, $want_recieve_courseID='NULL'){
-			$newCourse = array('fb_ID' => $fbID, 'send_course_ID' => $want_send_courseID , 'recieve_course_ID' =>$want_recieve_courseID, 'state' => 'ready');
+		private function postInTransactionArea($fbID, $want_send_courseID){
+			$newCourse = array('fb_ID' => $fbID, 'send_course_ID' => $want_send_courseID , 'state' => 'ready');
 		    $this->DB->Insert($newCourse,'current_posts');
 		}
+		
+		private function bestMatchCheck($want_send_courseID, $want_recieve_courseID){
+		    //A換B 需要符合B換A
+			$conditionArray = array('send_course_ID' => $want_recieve_courseID, 'recieve_course_ID' =>$want_send_courseID );
+			$matchCourses = $this -> DB -> Select('current_posts',$conditionArray);
+			if ($matchCourses==1) return 'non-match' ;//找不到
+			else return $matchCourses[0];
+		}
+		
+		private function postInExchangeArea($fbID, $want_send_courseID, $want_recieve_courseID){
+		   $result = $this -> bestMatchCheck($want_send_courseID, $want_recieve_courseID);
+		   if ($result == 'non-match'){
+				$newCourse = array('fb_ID' => $fbID, 'send_course_ID' => $want_send_courseID , 'recieve_course_ID' =>$want_recieve_courseID, 'state' => 'ready');
+				$this->DB->Insert($newCourse,'current_posts');
+			}
+			 return $result;
+		}
+		
+	    function postACourse($fbID, $want_send_courseID, $want_recieve_courseID='none'){
+		   if ($want_recieve_courseID == 'none') {
+				$this -> postInTransactionArea($fbID, $want_send_courseID); 
+				return;
+				}
+		   else $result = $this -> postInExchangeArea($fbID, $want_send_courseID, $want_recieve_courseID);
+		   
+		   if ($result != 'non-match')  print( json_encode($result,JSON_UNESCAPED_UNICODE));
+		   else return 'non-match';
+		 }
 		
 		function Login($userName, $fbID){
 			 $parameterArray = array ('fb_ID' => $fbID);
@@ -119,7 +149,7 @@
 			array_push($ratedCoursesArray,$token);
 			while ( $token = strtok(','))    array_push($ratedCoursesArray,$token);
 			//print_r ($ratedCoursesArray);
-			return $ratedCoursesArray;
+			return json_encode($ratedCoursesArray,JSON_UNESCAPED_UNICODE);
 		}
 		
 		function fuzzySearch($fuzzyString){
@@ -130,7 +160,7 @@
 			if (  $this->compareWithWord($row['course_name'],$fuzzyString) <= abs(mb_strlen($fuzzyString, 'utf-8') - mb_strlen($row['course_name'], 'utf-8') ) )
 				array_push($resultArray,$row['course_name']);
 			}
-		  return $resultArray;
+		  return json_encode($resultArray,JSON_UNESCAPED_UNICODE);
 		}
 		
 		private function compareWithWord($stringA,$stringB){
@@ -173,8 +203,6 @@
 				$min = $c;
 			return $min;
 		}
-		
-		
-	
+			
 	}
 ?>
