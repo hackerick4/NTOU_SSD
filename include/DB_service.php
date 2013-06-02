@@ -33,7 +33,21 @@
 		   else if ($type == 'transaction') $conditionArray =  array ('recieve_course_ID' => '<>none');
 		  $dataArray = $this->DB->Select('current_posts',$conditionArray);
 		  $dataArray = array_slice($dataArray,$from,$count);
-		 // print_r ($dataArray);
+		  
+		  foreach ($dataArray as &$rowArray){
+			if( !is_array($rowArray)) {
+			    $sendCourseName =  $this -> getCourseName($dataArray["send_course_ID"]);
+				$recieveCourseID =  $this -> getCourseName($dataArray["recieve_course_ID"]);
+				$dataArray["sendCourseName"] = $sendCourseName;
+				if (!$recieveCourseID)$dataArray["recieveCourseID"] = 'none';
+			    break;
+			}
+			$sendCourseName =  $this -> getCourseName($rowArray["send_course_ID"]);
+			$recieveCourseID =  $this -> getCourseName($rowArray["recieve_course_ID"]);
+			$rowArray["sendCourseName"] = $sendCourseName;
+			$rowArray["recieveCourseID"] = $recieveCourseID;
+		 }
+	    print_r ($dataArray);
 		 // echo json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		  return json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		}
@@ -66,7 +80,7 @@
 				}
 		   else $result = $this -> postInExchangeArea($fbID, $want_send_courseID, $want_recieve_courseID);
 		   
-		   if ($result != 'non-match')  print( json_encode($result,JSON_UNESCAPED_UNICODE));
+		   if ($result != 'non-match')  return json_encode($result,JSON_UNESCAPED_UNICODE);
 		   else return 'non-match';
 		 }
 		
