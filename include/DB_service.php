@@ -39,15 +39,15 @@
 			    $sendCourseName =  $this -> getCourseName($dataArray["send_course_ID"]);
 				$recieveCourseID =  $this -> getCourseName($dataArray["recieve_course_ID"]);
 				$dataArray["sendCourseName"] = $sendCourseName;
-				if (!$recieveCourseID)$dataArray["recieveCourseID"] = 'none';
+				if (!$recieveCourseID)$dataArray["recieveCourseName"] = 'none';
 			    break;
 			}
 			$sendCourseName =  $this -> getCourseName($rowArray["send_course_ID"]);
 			$recieveCourseID =  $this -> getCourseName($rowArray["recieve_course_ID"]);
 			$rowArray["sendCourseName"] = $sendCourseName;
-			$rowArray["recieveCourseID"] = $recieveCourseID;
+			$rowArray["recieveCourseName"] = $recieveCourseID;
 		 }
-	    print_r ($dataArray);
+	   // print_r ($dataArray);
 		 // echo json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		  return json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		}
