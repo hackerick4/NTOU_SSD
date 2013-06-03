@@ -7,6 +7,14 @@
 	            $this->DB = new MySQL('ssd', 'root','', 'localhost');
 		}
 		
+	function getHistory($fbID){
+			$parameterArray = array ('fb_ID' => $fbID);
+			$dataArray = array();
+			$dataArray = $this->DB->Select('current_posts',$parameterArray);
+			echo json_encode($dataArray,JSON_UNESCAPED_UNICODE);
+			return json_encode($dataArray,JSON_UNESCAPED_UNICODE);
+	}
+	
         function getAllCourse(){
 		     $dataArray = array();
 			 $dataArray = $this->DB->Select('course_info');
@@ -71,7 +79,8 @@
 			}
 			$this -> fixCurrentResultArray($rowArray);
 		 }
-	   	 // echo json_encode($dataArray,JSON_UNESCAPED_UNICODE);
+		 
+	   	  echo json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		  return json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		}
 		private function postInTransactionArea($fbID, $want_send_courseID){
@@ -189,21 +198,89 @@
 			return json_encode($ratedCoursesArray,JSON_UNESCAPED_UNICODE);
 		}
 		
-		function fuzzySearch($fuzzyString){
-		  $dataArray = array();
-		  $dataArray = $this->DB->Select('course_info');
-		  $resultArray = array();
-		  foreach  ($dataArray as $row){
-			if (  $this->compareWithWord($row['course_name'],$fuzzyString) <= abs(mb_strlen($fuzzyString, 'utf-8') - mb_strlen($row['course_name'], 'utf-8') ) )
-				array_push($resultArray,$row['course_name']);
-			}
-		  return json_encode($resultArray,JSON_UNESCAPED_UNICODE);
+		private function is_chinese($str) {
+			return preg_match("/\p{Han}+/u", $str);
 		}
+		
+		private function setupResultFromFuzzy($matchPIDArray){
+		$matchArray = array();
+		  foreach ($matchPIDArray  as $PostID){
+			$conditionArray = array ('PostID' => $PostID);
+			$dataArray = $this -> DB -> Select('current_posts' , $conditionArray);
+			$this -> fixCurrentResultArray($dataArray);
+			array_push($matchArray,$dataArray);
+			
+		  }
+		  return $matchArray;
+		//print_r($matchArray);
+		}
+		
+		function fuzzySearch($fuzzyString , $place = 'course_info' , $type){
+		//if (! $this -> is_chinese($fuzzyString)) return "error_parameter" ;  
+		  $dataArray = array();
+		  $dataArray = $this->DB->Select($place);
+		  $resultArray = array();
+		  if ($place == 'course_info'){
+			  foreach  ($dataArray as $row){
+				$distance= $this->compareWithWord($row['course_name'],$fuzzyString);
+				if (  $distance <= abs(mb_strlen($fuzzyString, 'utf-8') - mb_strlen($row['course_name'], 'utf-8') ) 
+					 || ($distance < mb_strlen($fuzzyString, 'utf-8') && $distance <mb_strlen($row['course_name'], 'utf-8'))
+				)
+					array_push($resultArray,$row['course_name']);
+				}
+			print_r($resultArray);
+			return json_encode($resultArray,JSON_UNESCAPED_UNICODE);
+		  }
+		  else if ($place == 'current_posts' && $type == 'exchange'){
+				 foreach  ($dataArray as $row){
+						$sendCourseName =  $this -> getCourseName( $row[ 'send_course_ID' ]);
+						$recieveCourseName =  $this -> getCourseName( $row[ 'recieve_course_ID' ]);
+						$distance= $this->compareWithWord($sendCourseName,$fuzzyString) ; // sendCourseName distance
+						if (  $distance <= abs(mb_strlen($fuzzyString, 'utf-8') - mb_strlen($sendCourseName, 'utf-8') ) 
+							 || ($distance < mb_strlen($fuzzyString, 'utf-8') && $distance <mb_strlen($sendCourseName, 'utf-8')) )
+							array_push($resultArray,$row[ 'PostID' ]);
+						
+						if ($recieveCourseName=="") continue;
+						$distance= $this->compareWithWord($recieveCourseName,$fuzzyString); // recieveCourseName distance
+						if (  $distance <= abs(mb_strlen($fuzzyString, 'utf-8') - mb_strlen($recieveCourseName, 'utf-8') ) 
+							 || ($distance < mb_strlen($fuzzyString, 'utf-8') && $distance <mb_strlen($recieveCourseName, 'utf-8')) )
+							array_push($resultArray,$row[ 'PostID' ]);
+						}
+					$resultArray = $this -> setupResultFromFuzzy($resultArray);
+					echo  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
+					return json_encode($resultArray,JSON_UNESCAPED_UNICODE);
+		  }
+		  
+		  else if ($place == 'current_posts' && $type == 'transaction'){
+					 foreach  ($dataArray as $row){
+						$recieveCourseName =  $this -> getCourseName( $row[ 'recieve_course_ID' ]);
+						if ($recieveCourseName!="") continue;
+						$sendCourseName =  $this -> getCourseName( $row[ 'send_course_ID' ]);
+						$distance= $this->compareWithWord($sendCourseName,$fuzzyString) ; // sendCourseName distance
+						if (  $distance <= abs(mb_strlen($fuzzyString, 'utf-8') - mb_strlen($sendCourseName, 'utf-8') ) 
+							 || ($distance < mb_strlen($fuzzyString, 'utf-8') && $distance <mb_strlen($sendCourseName, 'utf-8')) )
+							array_push($resultArray,$row[ 'PostID' ]);
+						}
+					
+					$resultArray = $this -> setupResultFromFuzzy($resultArray);
+					echo  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
+					return json_encode($resultArray,JSON_UNESCAPED_UNICODE);
+		  
+		  }
+		}
+		
 		
 		private function compareWithWord($stringA,$stringB){
 			//prepare var
+			
 			$stringA_len = mb_strlen($stringA, 'utf-8');
 			$stringB_len = mb_strlen($stringB, 'utf-8');
+		    if (!$this -> is_chinese($stringB)) $stringB = utf8_encode($stringB);
+		/*	echo $stringA.":".$stringA_len;
+			echo "</br>";
+			echo $stringB .":".$stringB_len;
+			echo "</br>";
+		*/
 			$distance_table = array();
 		    //setup distance table
 		    for ($i=0 ; $i < $stringA_len * $stringB_len; ++$i) $distance_table[ $i ] = 0;
@@ -226,6 +303,8 @@
 	            }
 		
         $distance = $distance_table[ $stringA_len * $stringB_len - 1 ];
+	/*	echo "dis : " . $distance;
+		echo "</br>-----------------</br>";*/
 	     return $distance;
 		}
 		return 0;
@@ -242,4 +321,5 @@
 		}
 			
 	}
+	
 ?>
