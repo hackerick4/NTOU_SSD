@@ -24,6 +24,36 @@
 			 return  $dataArray["rating"];
 		}
 		
+		function getCourseTime($courseID){
+			  $parameterArray = array ('course_ID' => $courseID);
+			 $dataArray = array();
+			 $dataArray = $this->DB->Select('course_info',$parameterArray);
+			 //print_r ($dataArray);
+			 return  $dataArray["course_time"];
+			}
+		function getCourseTeacher($courseID){
+			  $parameterArray = array ('course_ID' => $courseID);
+			 $dataArray = array();
+			 $dataArray = $this->DB->Select('course_info',$parameterArray);
+			 //print_r ($dataArray);
+			 return  $dataArray["teacher"];
+			}
+			
+		private function fixCurrentResultArray(&$dataArray){
+				$sendCourseName =  $this -> getCourseName($dataArray["send_course_ID"]);
+				$recieveCourseName =  $this -> getCourseName($dataArray["recieve_course_ID"]);
+				$dataArray["sendCourseName"] = $sendCourseName;
+				$dataArray["sendCourseRate"] = $this -> getCourseRate($dataArray["send_course_ID"]);
+				$dataArray["sendCourseTeacher"] = $this -> getCourseTeacher($dataArray["send_course_ID"]);
+				$dataArray["sendCourseTime"] = $this -> getCourseTime($dataArray["send_course_ID"]);
+				if ($recieveCourseName){
+					$dataArray["recieveCourseName"] = $recieveCourseName;
+					$dataArray["recieveCourseRate"] = $this -> getCourseRate($dataArray["recieve_course_ID"]);
+					$dataArray["recieveCourseTeacher"] = $this -> getCourseTeacher($dataArray["recieve_course_ID"]);
+					$dataArray["recieveCourseTime"] = $this -> getCourseTime($dataArray["recieve_course_ID"]);
+					}	
+		}
+			
 		function getCurrentCourses($page, $count,$type){
 		   $dataArray = array();
 		   $from = $count*($page-1);
@@ -36,19 +66,12 @@
 		  
 		  foreach ($dataArray as &$rowArray){
 			if( !is_array($rowArray)) {
-			    $sendCourseName =  $this -> getCourseName($dataArray["send_course_ID"]);
-				$recieveCourseID =  $this -> getCourseName($dataArray["recieve_course_ID"]);
-				$dataArray["sendCourseName"] = $sendCourseName;
-				if (!$recieveCourseID)$dataArray["recieveCourseName"] = 'none';
-			    break;
+			  		$this -> fixCurrentResultArray($dataArray);
+				break;
 			}
-			$sendCourseName =  $this -> getCourseName($rowArray["send_course_ID"]);
-			$recieveCourseID =  $this -> getCourseName($rowArray["recieve_course_ID"]);
-			$rowArray["sendCourseName"] = $sendCourseName;
-			$rowArray["recieveCourseName"] = $recieveCourseID;
+			$this -> fixCurrentResultArray($rowArray);
 		 }
-	   // print_r ($dataArray);
-		 // echo json_encode($dataArray,JSON_UNESCAPED_UNICODE);
+	   	 // echo json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		  return json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		}
 		private function postInTransactionArea($fbID, $want_send_courseID){
@@ -95,7 +118,7 @@
 			}
 		}
 		
-		function setCoutseRate($fbID,$courseID,$newValue){
+		function setCourseRate($fbID,$courseID,$newValue){
 		     //set this fb_user can't rate the course again
 			 $parameterArray = array ('fb_ID' => $fbID);
 			 $dataArray = array();
