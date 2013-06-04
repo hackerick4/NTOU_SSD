@@ -11,7 +11,7 @@
 			$parameterArray = array ('fb_ID' => $fbID);
 			$dataArray = array();
 			$dataArray = $this->DB->Select('current_posts',$parameterArray);
-			echo json_encode($dataArray,JSON_UNESCAPED_UNICODE);
+			//echo json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 			return json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 	}
 	
@@ -80,7 +80,7 @@
 			$this -> fixCurrentResultArray($rowArray);
 		 }
 		 
-	   	  echo json_encode($dataArray,JSON_UNESCAPED_UNICODE);
+	   	  //echo json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		  return json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		}
 		private function postInTransactionArea($fbID, $want_send_courseID){
@@ -228,7 +228,7 @@
 				)
 					array_push($resultArray,$row['course_name']);
 				}
-			print_r($resultArray);
+			//print_r($resultArray);
 			return json_encode($resultArray,JSON_UNESCAPED_UNICODE);
 		  }
 		  else if ($place == 'current_posts' && $type == 'exchange'){
@@ -247,7 +247,7 @@
 							array_push($resultArray,$row[ 'PostID' ]);
 						}
 					$resultArray = $this -> setupResultFromFuzzy($resultArray);
-					echo  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
+					//echo  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
 					return json_encode($resultArray,JSON_UNESCAPED_UNICODE);
 		  }
 		  
@@ -263,7 +263,7 @@
 						}
 					
 					$resultArray = $this -> setupResultFromFuzzy($resultArray);
-					echo  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
+					//echo  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
 					return json_encode($resultArray,JSON_UNESCAPED_UNICODE);
 		  
 		  }

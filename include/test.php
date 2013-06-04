@@ -8,7 +8,7 @@ $con = new SSD_DB_Service;
 //$con -> getAllCourse();  
 //$con -> getCourseRate("B1234567");
 //$con -> getCurrentCourses(1, 6,'exchange');
-//$con -> getCurrentCourses(1, 6,'transaction');
+$con -> getCurrentCourses(1, 6,'transaction');
 //$con -> postACourse('123456789569874', 'B1234567','B7654321');
 //$con -> postACourse('123456789569874', 'B7654321','B1234567');
 //$con -> setCourseRate('123456789987654','B1234888',3);
@@ -19,5 +19,5 @@ $con = new SSD_DB_Service;
 //$con -> getRatedCourses('123456789123456');
 //$con -> fuzzySearch('能E','course_info');
 //$con -> fuzzySearch('軟工','current_posts','exchange');
-$con -> getHistory('123456789569874');
+//$con -> getHistory('123456789569874');
 ?>
