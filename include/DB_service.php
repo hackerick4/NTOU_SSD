@@ -67,8 +67,8 @@
 		   $from = $count*($page-1);
 		   $to = $page*$count;
 		   $conditionArray= array();
-		   if ($type == 'exchange') $conditionArray = array ('recieve_course_ID' => 'none');
-		   else if ($type == 'transaction') $conditionArray =  array ('recieve_course_ID' => '<>none');
+		   if ($type == 'exchange') $conditionArray = array ('recieve_course_ID' => '<>none');
+		   else if ($type == 'transaction') $conditionArray =  array ('recieve_course_ID' => 'none');
 		  $dataArray = $this->DB->Select('current_posts',$conditionArray);
 		  $dataArray = array_slice($dataArray,$from,$count);
 		  
@@ -80,7 +80,7 @@
 			$this -> fixCurrentResultArray($rowArray);
 		 }
 		 
-	   	  //echo json_encode($dataArray,JSON_UNESCAPED_UNICODE);
+	   	  echo json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		  return json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		}
 		private function postInTransactionArea($fbID, $want_send_courseID){
