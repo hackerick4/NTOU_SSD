@@ -2,10 +2,10 @@
 -- version 3.5.2.2
 -- http://www.phpmyadmin.net
 --
--- Host: 127.0.0.1
--- Generation Time: May 22, 2013 at 06:41 PM
--- Server version: 5.5.27
--- PHP Version: 5.4.7
+-- 主機: 127.0.0.1
+-- 產生日期: 2013 年 06 月 04 日 11:30
+-- 伺服器版本: 5.5.27
+-- PHP 版本: 5.4.7
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,13 +17,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `ssd`
+-- 資料庫: `ssd`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `course_info`
+-- 表的結構 `course_info`
 --
 
 CREATE TABLE IF NOT EXISTS `course_info` (
@@ -38,17 +38,18 @@ CREATE TABLE IF NOT EXISTS `course_info` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Record course information ';
 
 --
--- Dumping data for table `course_info`
+-- 轉存資料表中的資料 `course_info`
 --
 
 INSERT INTO `course_info` (`department`, `course_ID`, `course_name`, `course_time`, `teacher`, `rating`, `rateCount`) VALUES
 ('資工系', 'B1234567', '軟體工程', '202,203,204', '馬上冰', 1, 5),
-('商船系', 'B7654321', '微積分', '102,203,204', '程懷懷', 4, 1);
+('商船系', 'B7654321', '微積分', '102,203,204', '程懷懷', 4, 1),
+('輪機系', 'M8975428', '能源Energy', '302,303', '胖胖詹', 2, 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `current_posts`
+-- 表的結構 `current_posts`
 --
 
 CREATE TABLE IF NOT EXISTS `current_posts` (
@@ -56,24 +57,25 @@ CREATE TABLE IF NOT EXISTS `current_posts` (
   `post_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `send_course_ID` varchar(20) NOT NULL,
   `state` varchar(20) NOT NULL,
-  `recieve_course_ID` varchar(20) DEFAULT NULL,
+  `recieve_course_ID` varchar(20) DEFAULT 'none',
   `PostID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`PostID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='the information at the mainPage' AUTO_INCREMENT=18 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='the information at the mainPage' AUTO_INCREMENT=34 ;
 
 --
--- Dumping data for table `current_posts`
+-- 轉存資料表中的資料 `current_posts`
 --
 
 INSERT INTO `current_posts` (`fb_ID`, `post_time`, `send_course_ID`, `state`, `recieve_course_ID`, `PostID`) VALUES
-('123456789123456', '2013-05-12 18:12:04', 'B1234567', 'ready', 'B7654321', 1),
-('123654987456214', '2013-05-15 15:55:18', 'M897542', 'ready', 'NULL', 16),
-('123456789569874', '2013-05-21 18:52:25', 'M897542', 'ready', 'NULL', 17);
+('123456789123456', '2013-06-03 14:58:20', 'B1234567', 'ready', 'none', 1),
+('123456789569874', '2013-06-03 12:51:15', 'M8975428', 'ready', 'none', 18),
+('123456789569874', '2013-05-25 09:42:15', 'B1234567', 'ready', 'B7654321', 32),
+('123456789569874', '2013-05-25 13:33:06', 'B1234567', 'ready', 'B7654321', 33);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user`
+-- 表的結構 `user`
 --
 
 CREATE TABLE IF NOT EXISTS `user` (
@@ -85,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Record users'' information';
 
 --
--- Dumping data for table `user`
+-- 轉存資料表中的資料 `user`
 --
 
 INSERT INTO `user` (`user_name`, `fb_ID`, `right_point`, `ratedCourses`) VALUES
@@ -96,7 +98,7 @@ INSERT INTO `user` (`user_name`, `fb_ID`, `right_point`, `ratedCourses`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_post_log`
+-- 表的結構 `user_post_log`
 --
 
 CREATE TABLE IF NOT EXISTS `user_post_log` (
@@ -108,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `user_post_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Record users'' log that was posted before';
 
 --
--- Dumping data for table `user_post_log`
+-- 轉存資料表中的資料 `user_post_log`
 --
 
 INSERT INTO `user_post_log` (`fb_ID`, `complete_time`, `PostID`, `state`) VALUES
