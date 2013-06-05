@@ -1,8 +1,22 @@
 <?php
-    header("Content-Type:text/html; charset=utf-8");
+    header("Content-Type: text/html; charset=utf-8");
 	include 'sql.php';
 	class SSD_DB_Service{
 		
+		
+	function utf8_str_split($str, $split_len = 1)
+	{
+			if (!preg_match('/^[0-9]+$/', $split_len) || $split_len < 1)
+				return FALSE;
+		 
+			$len = mb_strlen($str, 'UTF-8');
+			if ($len <= $split_len)
+				return array($str);
+		 
+			preg_match_all('/.{'.$split_len.'}|[^\x00]{1,'.$split_len.'}$/us', $str, $ar);
+		 
+			return $ar[0];
+	}	
 	  function SSD_DB_Service(){
 	            $this->DB = new MySQL('ssd', 'root','', 'localhost');
 		}
@@ -272,39 +286,49 @@
 		
 		private function compareWithWord($stringA,$stringB){
 			//prepare var
-			
 			$stringA_len = mb_strlen($stringA, 'utf-8');
 			$stringB_len = mb_strlen($stringB, 'utf-8');
-		   /* if (!$this -> is_chinese($stringB)) return;
-			echo $stringA.":".$stringA_len;
-			echo "</br>";
-			echo $stringB .":".$stringB_len;
-			echo "</br>";*/
-		
+			$stringA_arr  = $this-> utf8_str_split ($stringA);
+			$stringB_arr  = $this-> utf8_str_split ($stringB);
+          /* print_r ($stringA_arr);
+		   echo "</br>";
+		   print_r ($stringB_arr);*/
+		   // if (!$this -> is_chinese($stringB)) return;
+			
 			$distance_table = array();
 		    //setup distance table
-		    for ($i=0 ; $i < $stringA_len * $stringB_len; ++$i) $distance_table[ $i ] = 0;
+		  //  for ($i=0 ; $i < $stringA_len * $stringB_len; ++$i) $distance_table[ $i ] = 0;
 			//print_r($distance_table);
 		    //start to count  Levenshtein_Distance
-			if( $stringA_len++ != 0 && $stringB_len++ != 0 ) {
+			if( $stringA_len>0 && $stringB_len>0 ) {
 			    for ( $k = 0; $k < $stringA_len; $k++)  $distance_table[$k] = $k;
                 for ( $k = 0; $k < $stringB_len; $k++ )  $distance_table[ $k * $stringA_len ] = $k;
         
 				for ( $i = 1; $i < $stringA_len; $i++ )
 					for ( $j = 1; $j < $stringB_len; $j++ ) {
-                        if( $stringA [ $i ]== $stringB [  $j  ] )  $cost = 0;
-						else $cost = 1;
-                        
+                        if( $stringA_arr [ $i ]== $stringB_arr [  $j  ] )  {
+						$cost = 0;
+						}
+						else {
+						$cost = 1;
+                        }
                          $distance_table[ $j * $stringA_len + $i ] =  $this->smallest(
 						                           $distance_table[ ($j - 1) * $stringA_len + $i ] + 1,
 												   $distance_table [ $j * $stringA_len + $i - 1 ] +  1,
 												   $distance_table[ ($j - 1) * $stringA_len + $i -1 ] + $cost 
 													);
-	            }
-		//print_r($distance_table);
+	            }/*
+		print_r($distance_table);
+	    echo "</br>";
+		echo $stringA.":".$stringA_len;
+		echo "</br>";
+		echo $stringB .":".$stringB_len;
+		echo "</br>";
+		 $debug = $stringA_len * $stringB_len - 1;*/
         $distance = $distance_table[ $stringA_len * $stringB_len - 1 ];
-
-	   /* echo "dis : " . $distance;
+		/*echo $debug;
+		echo "</br>";
+	    echo "dis : " . $distance;
 		echo "</br>-----------------</br>";*/
 	     return $distance;
 		}

@@ -19,7 +19,7 @@ $con = new SSD_DB_Service;
 //$con -> getRatedCourses('123456789123456');
 
 
-echo $con -> fuzzySearch('能E','course_info');
+echo $con -> fuzzySearch('軟工','course_info');
 //$con -> fuzzySearch('軟工','current_posts','exchange');
 //$con -> getHistory('123456789569874');
 ?>
