@@ -80,7 +80,7 @@
 			$this -> fixCurrentResultArray($rowArray);
 		 }
 		 
-	   	  echo json_encode($dataArray,JSON_UNESCAPED_UNICODE);
+	   	 // echo json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		  return json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		}
 		private function postInTransactionArea($fbID, $want_send_courseID){
@@ -215,7 +215,7 @@
 		//print_r($matchArray);
 		}
 		
-		function fuzzySearch($fuzzyString , $place = 'course_info' , $type){
+		function fuzzySearch($fuzzyString , $place = 'course_info' , $type = 'none'){
 		//if (! $this -> is_chinese($fuzzyString)) return "error_parameter" ;  
 		  $dataArray = array();
 		  $dataArray = $this->DB->Select($place);
@@ -228,7 +228,7 @@
 				)
 					array_push($resultArray,$row['course_name']);
 				}
-			//print_r($resultArray);
+		//	print_r($resultArray);
 			return json_encode($resultArray,JSON_UNESCAPED_UNICODE);
 		  }
 		  else if ($place == 'current_posts' && $type == 'exchange'){
@@ -275,7 +275,7 @@
 			
 			$stringA_len = mb_strlen($stringA, 'utf-8');
 			$stringB_len = mb_strlen($stringB, 'utf-8');
-		    if (!$this -> is_chinese($stringB)) $stringB = utf8_encode($stringB);
+		    if (!$this -> is_chinese($stringB)) return;
 		/*	echo $stringA.":".$stringA_len;
 			echo "</br>";
 			echo $stringB .":".$stringB_len;
@@ -303,9 +303,9 @@
 	            }
 		
         $distance = $distance_table[ $stringA_len * $stringB_len - 1 ];
-	/*	echo "dis : " . $distance;
-		echo "</br>-----------------</br>";*/
-	     return $distance;
+	   /* echo "dis : " . $distance;
+		echo "</br>-----------------</br>";
+	     return $distance;*/
 		}
 		return 0;
 		}

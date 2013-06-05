@@ -7,7 +7,7 @@ include 'DB_service.php';
 $con = new SSD_DB_Service;
 //$con -> getAllCourse();  
 //$con -> getCourseRate("B1234567");
-$con -> getCurrentCourses(1, 6,'exchange');
+//$con -> getCurrentCourses(1, 6,'exchange');
 //$con -> getCurrentCourses(1, 6,'transaction');
 //$con -> postACourse('123456789569874', 'B1234567','B7654321');
 //$con -> postACourse('123456789569874', 'B7654321','B1234567');
@@ -17,7 +17,7 @@ $con -> getCurrentCourses(1, 6,'exchange');
 //$con -> getCourseName('B1234567');
 //$con -> getPersonalURL('123456789123456','123456789987654');
 //$con -> getRatedCourses('123456789123456');
-//$con -> fuzzySearch('能E','course_info');
+$con -> fuzzySearch('123','course_info');
 //$con -> fuzzySearch('軟工','current_posts','exchange');
 //$con -> getHistory('123456789569874');
 ?>
