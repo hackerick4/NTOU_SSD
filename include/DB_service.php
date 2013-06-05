@@ -228,7 +228,7 @@
 				)
 					array_push($resultArray,$row['course_name']);
 				}
-		//	print_r($resultArray);
+			//print_r($resultArray);
 			return json_encode($resultArray,JSON_UNESCAPED_UNICODE);
 		  }
 		  else if ($place == 'current_posts' && $type == 'exchange'){
@@ -275,12 +275,12 @@
 			
 			$stringA_len = mb_strlen($stringA, 'utf-8');
 			$stringB_len = mb_strlen($stringB, 'utf-8');
-		    if (!$this -> is_chinese($stringB)) return;
-		/*	echo $stringA.":".$stringA_len;
+		   /* if (!$this -> is_chinese($stringB)) return;
+			echo $stringA.":".$stringA_len;
 			echo "</br>";
 			echo $stringB .":".$stringB_len;
-			echo "</br>";
-		*/
+			echo "</br>";*/
+		
 			$distance_table = array();
 		    //setup distance table
 		    for ($i=0 ; $i < $stringA_len * $stringB_len; ++$i) $distance_table[ $i ] = 0;
@@ -301,11 +301,12 @@
 												   $distance_table[ ($j - 1) * $stringA_len + $i -1 ] + $cost 
 													);
 	            }
-		
+		//print_r($distance_table);
         $distance = $distance_table[ $stringA_len * $stringB_len - 1 ];
+
 	   /* echo "dis : " . $distance;
-		echo "</br>-----------------</br>";
-	     return $distance;*/
+		echo "</br>-----------------</br>";*/
+	     return $distance;
 		}
 		return 0;
 		}
