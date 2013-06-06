@@ -321,7 +321,7 @@
 			       // print_r($row['course_name']);
 					array_push($resultArray,$row['course_name']);
 					}
-				$resultArray = $this -> setupResultFromFuzzy($resultArray);
+				//$resultArray = $this -> setupResultFromFuzzy($resultArray);
 				return  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
 		  }
 		  

@@ -19,7 +19,7 @@ $con = new SSD_DB_Service;
 //$con -> getRatedCourses('123456789123456');
 //echo $con -> fuzzySearch('C++');
 //$con -> deleteFromCurrentCourse('32');
-echo $con -> fuzzySearch('軟工');
+echo $con -> fuzzySearch('微');
 //echo $con -> fuzzySearch('軟工','current_posts','transaction');
 //$con -> getHistory('123456789569874');
 //$con -> setCourseState(18,'processing')
