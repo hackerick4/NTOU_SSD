@@ -328,7 +328,7 @@
 		  if ($place == 'course_info'){
 			  foreach  ($dataArray as $row){
 				$distance= $this->compareWithWord($row['course_name'],$fuzzyString);
-				if (  $distance <= abs(mb_strlen($fuzzyString, 'utf-8') - mb_strlen($row['course_name'], 'utf-8') ) 				)
+				if (  $distance <= abs(mb_strlen($fuzzyString, 'utf-8') - mb_strlen($row['course_name'], 'utf-8') ) )
 					array_push($resultArray,$row['course_name']);
 				}
 			//print_r($resultArray);
@@ -358,8 +358,7 @@
 						if ($recieveCourseName!="") continue;
 						$sendCourseName =  $this -> getCourseName( $row[ 'send_course_ID' ]);
 						$distance= $this->compareWithWord($sendCourseName,$fuzzyString) ; // sendCourseName distance
-						if (  $distance <= abs(mb_strlen($fuzzyString, 'utf-8') - mb_strlen($sendCourseName, 'utf-8') ) 
-							 || ($distance < mb_strlen($fuzzyString, 'utf-8') && $distance <mb_strlen($sendCourseName, 'utf-8')) )
+						if (  $distance <= abs(mb_strlen($fuzzyString, 'utf-8') - mb_strlen($sendCourseName, 'utf-8') ))
 							array_push($resultArray,$row[ 'PostID' ]);
 						}
 					
@@ -378,9 +377,9 @@
 			$stringB_len = mb_strlen($stringB, 'utf-8');
 			$stringA_arr  = $this-> utf8_str_split ($stringA);
 			$stringB_arr  = $this-> utf8_str_split ($stringB);
-          print_r ($stringA_arr);
+       /*   print_r ($stringA_arr);
 		   echo "</br>";
-		   print_r ($stringB_arr);
+		   print_r ($stringB_arr);*/
 		   // if (!$this -> is_chinese($stringB)) return;
 			
 			$distance_table = array();
@@ -404,7 +403,7 @@
 												   $distance_table[ ($j - 1) * $stringA_len + $i -1 ] + $cost 
 													);
 	            }
-		print_r($distance_table);
+	/*	print_r($distance_table);
 	    echo "</br>";
 		echo $stringA.":".$stringA_len;
 		echo "</br>";
@@ -413,7 +412,7 @@
         $distance = $distance_table[ $stringA_len * $stringB_len - 1 ];
 		echo "</br>";
 	    echo "dis : " . $distance;
-		echo "</br>-----------------</br>";
+		echo "</br>-----------------</br>";*/
 		$distance = $distance_table[ $stringA_len * $stringB_len - 1 ];
 	     return $distance;
 		}
