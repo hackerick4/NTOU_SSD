@@ -15,11 +15,11 @@ $con = new SSD_DB_Service;
 //$con -> Login('詹肥肥3號', '123456789981234');
 //$con -> getCourseID('軟體工程');
 //$con -> getCourseName('B1234567');
-//$con -> getPersonalURL('123456789123456','123456789987654');
+//$con -> getPersonalURL('32','123456789987654');
 //$con -> getRatedCourses('123456789123456');
-echo $con -> fuzzySearch('軟');
+//echo $con -> fuzzySearch('軟');
 //$con -> deleteFromCurrentCourse('32');
 
-//$con -> fuzzySearch('軟工','current_posts','exchange');
+echo $con -> fuzzySearch('軟','current_posts','transaction');
 //$con -> getHistory('123456789569874');
 ?>

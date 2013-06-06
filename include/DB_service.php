@@ -201,8 +201,8 @@
 		     $parameterArray = array ('postID' => $postID);
 			$dataArray = array();
 			$dataArray = $this->DB->Select('current_posts',$parameterArray);
-		    //$want_person = $dataArray[''];
-		
+		    $want_person = $dataArray['fb_ID'];
+            		
 		
 		    if ($want_person == $post_person) return '參數不可相同';
 		    // 查看post個人網址的人 權力點數需要-1
@@ -252,9 +252,34 @@
 		//print_r($matchArray);
 		}
 		
-		private function singleWordFuzzySearch($fuzzySearch){
+		private function singleWordFuzzySearch($fuzzySearch,$table ='course_info',$type = 'none'){
+			if ($table != 'course_info' ){
+					 if ($type == 'exchange') $conditionArray = array ('recieve_course_ID' => '<>none');
+					else if ($type == 'transaction') $conditionArray =  array ('recieve_course_ID' => 'none');
+			        $resultArray = array();
+					$dataArray = $this -> DB -> Select($table,$conditionArray);
+					if (is_array( reset($dataArray))){
+						 foreach($dataArray as $row){
+							$sendCourseName =  $this -> getCourseName( $row[ 'send_course_ID' ]);
+							$recieveCourseName =  $this -> getCourseName( $row[ 'recieve_course_ID' ]);
+							if (strstr($sendCourseName,$fuzzySearch) || strstr($recieveCourseName,$fuzzySearch)) {
+								 array_push($resultArray,$row);
+								}
+						}
+						return $resultArray;
+					}
+					else {
+							$sendCourseName =  $this -> getCourseName( $dataArray[ 'send_course_ID' ]);
+							$recieveCourseName =  $this -> getCourseName( $dataArray[ 'recieve_course_ID' ]);
+							if (strstr($sendCourseName,$fuzzySearch) || strstr($recieveCourseName,$fuzzySearch)) {
+								 array_push($resultArray,$dataArray);
+								}
+							return $resultArray;
+					}
+			}
+			
 			$conditionArray = array ('course_name' => $fuzzySearch);
-			$resultArray = $this -> DB -> Select('course_info',$conditionArray,'','',true);
+			$resultArray = $this -> DB -> Select($table,$conditionArray,'','',true);
 	
 			return $resultArray;
 			
@@ -279,6 +304,12 @@
 			array_push($resultArray,$dataArray['course_name']);
 			return  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
 		  }
+		  
+		  if (mb_strlen($fuzzyString, 'utf-8') == 1 && $type != 'none') {
+			 $dataArray =  $this -> singleWordFuzzySearch($fuzzyString,'current_posts',$type);
+		     return  json_encode($dataArray,JSON_UNESCAPED_UNICODE);
+		  }
+		  
 		  
 		  if (mb_strlen($fuzzyString, 'utf-8') == 1) {
 		  $dataArray =  $this -> singleWordFuzzySearch($fuzzyString);
