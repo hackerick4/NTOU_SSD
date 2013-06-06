@@ -99,6 +99,7 @@ class MySQL {
 
 	// Executes MySQL query
 	function ExecuteSQL($query){
+	  //echo $query;
 		$this->lastQuery 	= $query;
 		mysql_query("SET NAMES 'UTF8'");
 		if($this->result 	= mysql_query($query, $this->databaseLink)){
@@ -169,7 +170,7 @@ class MySQL {
 		if($limit != ''){
 			$query .= ' LIMIT ' . $limit;
 		}
-
+      
 		return $this->ExecuteSQL($query);
 	}
 

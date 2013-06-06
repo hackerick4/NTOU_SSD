@@ -229,11 +229,38 @@
 		//print_r($matchArray);
 		}
 		
+		private function singleWordFuzzySearch($fuzzySearch){
+			$conditionArray = array ('course_name' => $fuzzySearch);
+			$resultArray = $this -> DB -> Select('course_info',$conditionArray,'','',true);
+			//print_r ($resultArray);
+			return $resultArray;
+			
+			}
+			
+		private function timeSearch($timeString){
+			$conditionArray = array ('course_time' => $timeString);
+			$resultArray = $this -> DB -> Select('course_info',$conditionArray,'','',true);
+			//print_r ($resultArray);
+			return $resultArray;
+		}
+		
 		function fuzzySearch($fuzzyString , $place = 'course_info' , $type = 'none'){
-		//if (! $this -> is_chinese($fuzzyString)) return "error_parameter" ;  
-		  $dataArray = array();
-		  $dataArray = $this->DB->Select($place);
+		  $dataArray = array();  
 		  $resultArray = array();
+		  $dataArray = $this->DB->Select($place);
+		
+		  if (is_numeric($fuzzyString[0]) && mb_strlen($fuzzyString, 'utf-8') >= 3) {
+			 $dataArray = $this -> timeSearch($fuzzyString);
+			array_push($resultArray,$dataArray['course_name']);
+			return  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
+		  }
+		  
+		  if (mb_strlen($fuzzyString, 'utf-8') == 1) {
+		  $dataArray =  $this -> singleWordFuzzySearch($fuzzyString);
+			array_push($resultArray,$dataArray['course_name']);
+			return  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
+		  }
+		  
 		  if ($place == 'course_info'){
 			  foreach  ($dataArray as $row){
 				$distance= $this->compareWithWord($row['course_name'],$fuzzyString);
@@ -281,6 +308,7 @@
 					return json_encode($resultArray,JSON_UNESCAPED_UNICODE);
 		  
 		  }
+		  
 		}
 		
 		
@@ -290,15 +318,13 @@
 			$stringB_len = mb_strlen($stringB, 'utf-8');
 			$stringA_arr  = $this-> utf8_str_split ($stringA);
 			$stringB_arr  = $this-> utf8_str_split ($stringB);
-          /* print_r ($stringA_arr);
+         /* print_r ($stringA_arr);
 		   echo "</br>";
 		   print_r ($stringB_arr);*/
 		   // if (!$this -> is_chinese($stringB)) return;
 			
 			$distance_table = array();
 		    //setup distance table
-		  //  for ($i=0 ; $i < $stringA_len * $stringB_len; ++$i) $distance_table[ $i ] = 0;
-			//print_r($distance_table);
 		    //start to count  Levenshtein_Distance
 			if( $stringA_len>0 && $stringB_len>0 ) {
 			    for ( $k = 0; $k < $stringA_len; $k++)  $distance_table[$k] = $k;
@@ -317,19 +343,18 @@
 												   $distance_table [ $j * $stringA_len + $i - 1 ] +  1,
 												   $distance_table[ ($j - 1) * $stringA_len + $i -1 ] + $cost 
 													);
-	            }/*
-		print_r($distance_table);
+	            }
+		/*print_r($distance_table);
 	    echo "</br>";
 		echo $stringA.":".$stringA_len;
 		echo "</br>";
 		echo $stringB .":".$stringB_len;
 		echo "</br>";
-		 $debug = $stringA_len * $stringB_len - 1;*/
         $distance = $distance_table[ $stringA_len * $stringB_len - 1 ];
-		/*echo $debug;
 		echo "</br>";
 	    echo "dis : " . $distance;
 		echo "</br>-----------------</br>";*/
+		$distance = $distance_table[ $stringA_len * $stringB_len - 1 ];
 	     return $distance;
 		}
 		return 0;
