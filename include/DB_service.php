@@ -22,7 +22,7 @@
 			 $dataArray = array();
 			 $dataArray = $this->DB->Select('current_posts',$parameterArray);
 			  $newState = array ('state' => $nextState);
-			 print_r($newState);
+			 //print_r($newState);
 		     $this -> DB -> Update('current_posts',$newState,$parameterArray);
 	}
 	
@@ -242,14 +242,14 @@
 		}
 		
 		private function setupResultFromFuzzy($matchPIDArray){
+		print_r($matchPIDArray);
 		$matchArray = array();
 		  foreach ($matchPIDArray  as $PostID){
 			$conditionArray = array ('PostID' => $PostID);
 			$dataArray = $this -> DB -> Select('current_posts' , $conditionArray);
 			$this -> fixCurrentResultArray($dataArray);
 			array_push($matchArray,$dataArray);
-			
-		  }
+		 }
 		  return $matchArray;
 		//print_r($matchArray);
 		}
@@ -265,7 +265,7 @@
 							$sendCourseName =  $this -> getCourseName( $row[ 'send_course_ID' ]);
 							$recieveCourseName =  $this -> getCourseName( $row[ 'recieve_course_ID' ]);
 							if (strstr($sendCourseName,$fuzzySearch) || strstr($recieveCourseName,$fuzzySearch)) {
-								 array_push($resultArray,$row);
+								 array_push($resultArray,$row['PostID']);
 								}
 						}
 						return $resultArray;
@@ -274,7 +274,7 @@
 							$sendCourseName =  $this -> getCourseName( $dataArray[ 'send_course_ID' ]);
 							$recieveCourseName =  $this -> getCourseName( $dataArray[ 'recieve_course_ID' ]);
 							if (strstr($sendCourseName,$fuzzySearch) || strstr($recieveCourseName,$fuzzySearch)) {
-								 array_push($resultArray,$dataArray);
+								 array_push($resultArray,$row['PostID']);
 								}
 							return $resultArray;
 					}
@@ -309,6 +309,7 @@
 		  
 		  if (mb_strlen($fuzzyString, 'utf-8') == 1 && $type != 'none') {
 			 $dataArray =  $this -> singleWordFuzzySearch($fuzzyString,'current_posts',$type);
+			$dataArray = $this -> setupResultFromFuzzy($dataArray);
 		     return  json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		  }
 		  
@@ -320,6 +321,7 @@
 			       // print_r($row['course_name']);
 					array_push($resultArray,$row['course_name']);
 					}
+				$resultArray = $this -> setupResultFromFuzzy($resultArray);
 				return  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
 		  }
 		  
