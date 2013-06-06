@@ -198,17 +198,17 @@
 		}
 		
 		function getPersonalURL ($postID, $post_person){
-		     $parameterArray = array ('postID' => $postID);
+		     $parameterArray = array ('PostID' => $postID);
 			$dataArray = array();
 			$dataArray = $this->DB->Select('current_posts',$parameterArray);
 		    $want_person = $dataArray['fb_ID'];
-            		
-		
-		    if ($want_person == $post_person) return '參數不可相同';
+			print_r($dataArray);
+             if ($want_person == $post_person) return '參數不可相同';
 		    // 查看post個人網址的人 權力點數需要-1
 		    $parameterArray = array ('fb_ID' => $want_person);
 			$dataArray = array();
 			$dataArray = $this->DB->Select('user',$parameterArray);
+			
 			if ($dataArray['right_point']-1 < 0) return '權力點數不足';
 			$decreasePointArray = array ('right_point' => $dataArray['right_point']-1);
 			$decreaseConditionArray = array ('fb_ID' => $want_person);
