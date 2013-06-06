@@ -2,8 +2,28 @@
     header("Content-Type: text/html; charset=utf-8");
 	include 'sql.php';
 	class SSD_DB_Service{
+		 function SSD_DB_Service(){
+	            $this->DB = new MySQL('ssd', 'root','', 'localhost');
+		}
 		
-		
+	function getRightPoint ($fbID){
+		$parameterArray = array ('fb_ID' => $fbID);
+		$dataArray = array();
+		$dataArray = $this->DB->Select('user',$parameterArray);
+		return $dataArray['right_point'];
+	}
+	function deleteFromCurrentCourse($postID){
+		     $parameterArray = array ('postID' => $postID);
+			 $this->DB->Delete('current_posts',$parameterArray);
+	}
+	
+	function setCourseState ($courseID,$nextState)	{
+		     $parameterArray = array ('course_ID' => $courseID);
+			 $dataArray = array();
+			 $dataArray = $this->DB->Select('current_posts',$parameterArray);
+			 $newState = array ('state' => $nextState);
+		     $this -> DB -> Update('user',$newState,$parameterArray);
+	}
 	function utf8_str_split($str, $split_len = 1)
 	{
 			if (!preg_match('/^[0-9]+$/', $split_len) || $split_len < 1)
@@ -17,10 +37,7 @@
 		 
 			return $ar[0];
 	}	
-	  function SSD_DB_Service(){
-	            $this->DB = new MySQL('ssd', 'root','', 'localhost');
-		}
-		
+	 
 	function getHistory($fbID){
 			$parameterArray = array ('fb_ID' => $fbID);
 			$dataArray = array();
@@ -180,7 +197,13 @@
 			return $dataArray["course_name"];
 		}
 		
-		function getPersonalURL ($want_person, $post_person){
+		function getPersonalURL ($postID, $post_person){
+		     $parameterArray = array ('postID' => $postID);
+			$dataArray = array();
+			$dataArray = $this->DB->Select('current_posts',$parameterArray);
+		    //$want_person = $dataArray[''];
+		
+		
 		    if ($want_person == $post_person) return '參數不可相同';
 		    // 查看post個人網址的人 權力點數需要-1
 		    $parameterArray = array ('fb_ID' => $want_person);
@@ -232,7 +255,7 @@
 		private function singleWordFuzzySearch($fuzzySearch){
 			$conditionArray = array ('course_name' => $fuzzySearch);
 			$resultArray = $this -> DB -> Select('course_info',$conditionArray,'','',true);
-			//print_r ($resultArray);
+	
 			return $resultArray;
 			
 			}
@@ -244,9 +267,11 @@
 			return $resultArray;
 		}
 		
+	
 		function fuzzySearch($fuzzyString , $place = 'course_info' , $type = 'none'){
 		  $dataArray = array();  
 		  $resultArray = array();
+		 
 		  $dataArray = $this->DB->Select($place);
 		
 		  if (is_numeric($fuzzyString[0]) && mb_strlen($fuzzyString, 'utf-8') >= 3) {
@@ -257,6 +282,14 @@
 		  
 		  if (mb_strlen($fuzzyString, 'utf-8') == 1) {
 		  $dataArray =  $this -> singleWordFuzzySearch($fuzzyString);
+		  if (is_array( reset($dataArray)) ) {
+			foreach  ($dataArray as $row){
+			       // print_r($row['course_name']);
+					array_push($resultArray,$row['course_name']);
+					}
+				return  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
+		  }
+		  
 			array_push($resultArray,$dataArray['course_name']);
 			return  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
 		  }
