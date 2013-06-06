@@ -22,4 +22,5 @@ $con = new SSD_DB_Service;
 
 //echo $con -> fuzzySearch('軟','current_posts','transaction');
 //$con -> getHistory('123456789569874');
+$con -> setCourseState(18,'processing')
 ?>

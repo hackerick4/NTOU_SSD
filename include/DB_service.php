@@ -17,13 +17,15 @@
 			 $this->DB->Delete('current_posts',$parameterArray);
 	}
 	
-	function setCourseState ($courseID,$nextState)	{
-		     $parameterArray = array ('course_ID' => $courseID);
+	function setCourseState ($postID,$nextState)	{
+		     $parameterArray = array ('PostID' => $postID);
 			 $dataArray = array();
 			 $dataArray = $this->DB->Select('current_posts',$parameterArray);
-			 $newState = array ('state' => $nextState);
-		     $this -> DB -> Update('user',$newState,$parameterArray);
+			  $newState = array ('state' => $nextState);
+			 print_r($newState);
+		     $this -> DB -> Update('current_posts',$newState,$parameterArray);
 	}
+	
 	function utf8_str_split($str, $split_len = 1)
 	{
 			if (!preg_match('/^[0-9]+$/', $split_len) || $split_len < 1)

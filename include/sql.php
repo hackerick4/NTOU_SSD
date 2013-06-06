@@ -254,9 +254,9 @@ class MySQL {
 		foreach($where as $key=>$value){
 			$query .= "`{$key}` = '{$value}' AND ";
 		}
-
+       
 		$query = substr($query, 0, -5);
-
+       echo $query;
 		return $this->ExecuteSQL($query);
 	}
 
