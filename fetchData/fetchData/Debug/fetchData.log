@@ -1,0 +1,15 @@
+﻿已經開始建置於 2013/6/9 上午 03:03:42。
+     1>節點 2 (Build 目標) 上的專案 "C:\Users\Rick\Desktop\fetchData\fetchData\fetchData.vcxproj"。
+     1>ClCompile:
+         D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
+         main.cpp
+     1>c:\users\rick\desktop\fetchdata\fetchdata\main.cpp(45): warning C4996: 'getch': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _getch. See online help for details.
+                 d:\program files (x86)\microsoft visual studio 11.0\vc\include\conio.h(131) : 請參閱 'getch' 的宣告
+       Link:
+         D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Rick\Desktop\fetchData\Debug\fetchData.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Rick\Desktop\fetchData\Debug\fetchData.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Rick\Desktop\fetchData\Debug\fetchData.lib" /MACHINE:X86 Debug\main.obj
+         fetchData.vcxproj -> C:\Users\Rick\Desktop\fetchData\Debug\fetchData.exe
+     1>專案 "C:\Users\Rick\Desktop\fetchData\fetchData\fetchData.vcxproj" (Build 目標) 建置完成。
+
+建置成功。
+
+經過時間 00:00:01.65
