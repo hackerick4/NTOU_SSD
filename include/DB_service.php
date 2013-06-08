@@ -187,8 +187,13 @@
 		     $parameterArray = array ('course_name' => $courseName);
 			 $dataArray = array();
 			 $dataArray = $this->DB->Select('course_info',$parameterArray);
-			//echo $dataArray["course_ID"];
-			return $dataArray["course_ID"];
+			 $mutiDataArray = array();
+			if (! is_array(reset($dataArray)) ) array_push($mutiDataArray, $dataArray['course_ID']);
+			else {
+				foreach($dataArray as $row)  array_push($mutiDataArray, $row['course_ID']);
+			 }
+			
+			 return  json_encode($mutiDataArray,JSON_UNESCAPED_UNICODE);
 		}
 		
 		function getCourseName($courseID){
