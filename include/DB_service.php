@@ -209,7 +209,7 @@
 			$dataArray = array();
 			$dataArray = $this->DB->Select('current_posts',$parameterArray);
 		    $want_person = $dataArray['fb_ID'];
-			print_r($dataArray);
+			//print_r($dataArray);
              if ($want_person == $post_person) return '參數不可相同';
 		    // 查看post個人網址的人 權力點數需要-1
 		    $parameterArray = array ('fb_ID' => $want_person);
@@ -247,7 +247,7 @@
 		}
 		
 		private function setupResultFromFuzzy($matchPIDArray){
-		print_r($matchPIDArray);
+		//print_r($matchPIDArray);
 		$matchArray = array();
 		  foreach ($matchPIDArray  as $PostID){
 			$conditionArray = array ('PostID' => $PostID);
