@@ -84,11 +84,13 @@
 				$dataArray["sendCourseRate"] = $this -> getCourseRate($dataArray["send_course_ID"]);
 				$dataArray["sendCourseTeacher"] = $this -> getCourseTeacher($dataArray["send_course_ID"]);
 				$dataArray["sendCourseTime"] = $this -> getCourseTime($dataArray["send_course_ID"]);
+				$dataArray["sendCourseNum"] = $dataArray["send_course_ID"];
 				if ($recieveCourseName){
 					$dataArray["recieveCourseName"] = $recieveCourseName;
 					$dataArray["recieveCourseRate"] = $this -> getCourseRate($dataArray["recieve_course_ID"]);
 					$dataArray["recieveCourseTeacher"] = $this -> getCourseTeacher($dataArray["recieve_course_ID"]);
 					$dataArray["recieveCourseTime"] = $this -> getCourseTime($dataArray["recieve_course_ID"]);
+					$dataArray["recieveCourseNum"] = $dataArray["recieve_course_ID"];
 					}	
 		}
 			
