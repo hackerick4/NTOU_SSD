@@ -56,20 +56,17 @@
 			return json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		}
       
-	    function getCourseRate($courseID){
-		     $parameterArray = array ('course_ID' => $courseID);
+	    function getCourseRate($courseNum){
+		     $parameterArray = array ('courseNum' => $courseNum);
 			 $dataArray = array();
 			 $dataArray = $this->DB->Select('course_info',$parameterArray);
-			 //print_r ($dataArray);
-			// echo $dataArray["rating"];
 			 return  $dataArray["rating"];
 		}
 		
-		function getCourseTime($courseID){
-			  $parameterArray = array ('course_ID' => $courseID);
+		function getCourseTime($courseNum){
+			 $parameterArray = array ('courseNum' => $courseNum);
 			 $dataArray = array();
 			 $dataArray = $this->DB->Select('course_info',$parameterArray);
-			 //print_r ($dataArray);
 			 return  $dataArray["course_time"];
 			}
 		function getCourseTeacher($courseID){
@@ -160,25 +157,25 @@
 			}
 		}
 		
-		function setCourseRate($fbID,$courseID,$newValue){
+		function setCourseRate($fbID,$courseNum,$newValue){
 		     //set this fb_user can't rate the course again
 			 $parameterArray = array ('fb_ID' => $fbID);
 			 $dataArray = array();
 			 $dataArray = $this->DB->Select('user',$parameterArray);
-			 if (strstr($dataArray['ratedCourses'],$courseID)) 
+			 if (strstr($dataArray['ratedCourses'],$courseNum)) 
 				return "已經評比過該課程";
-			 $newRatedCourses = array ('ratedCourses' => $dataArray['ratedCourses']. "," .$courseID);
+			 $newRatedCourses = array ('ratedCourses' => $dataArray['ratedCourses']. "," .$courseNum);
 		     $this -> DB -> Update('user',$newRatedCourses,$parameterArray);
 			 
 			 //count the rate avg and set the rate
-		     $parameterArray = array ('course_ID' => $courseID);
+		     $parameterArray = array ('courseNum' => $courseNum);
 			 $dataArray = array();
 			 $dataArray = $this->DB->Select('course_info',$parameterArray);
 			 $newValue = ($dataArray["rating"]+$newValue)/($dataArray["rateCount"]+1);
 			 
 			 //prepare var
 			 $newRatingArray = array('rating' => $newValue, 'rateCount' => $dataArray["rateCount"]+1);
-			 $conditionArray = array('course_ID' => $courseID);
+			 $conditionArray = array('courseNum' => $courseNum);
 			 $this -> DB -> Update('course_info',$newRatingArray,$conditionArray);
 			 
 		}
@@ -196,14 +193,11 @@
 			 return  json_encode($mutiDataArray,JSON_UNESCAPED_UNICODE);
 		}
 		
-		function getCourseName($courseID){
-		     $parameterArray = array ('course_ID' => $courseID);
+		function getCourseName($courseNum){
+		     $parameterArray = array ('courseNum' => $courseNum);
 			 $dataArray = array();
-			 $dataArray = $this->DB->Select('course_info',$parameterArray);
-			 if (is_array( reset($dataArray)) ) {
-				return $dataArray[0]["course_name"];
-			}
-			return $dataArray ["course_name"];
+			 $dataArray = $this->DB->Select('course_info',$parameterArray); 
+			 return $dataArray ["course_name"];
 		}
 		
 		function getPersonalURL ($postID, $post_person){
