@@ -308,9 +308,20 @@
 		
 		  if (is_numeric($fuzzyString[0]) && mb_strlen($fuzzyString, 'utf-8') >= 3) {
 			 $dataArray = $this -> timeSearch($fuzzyString);
+			 $resultArray = array();
+			  if (is_array( reset($dataArray)) ) {
+				foreach  ($dataArray as $row){
+			       // print_r($row['course_name']);
+					array_push($resultArray,$row['course_name']);
+					}
+				//$resultArray = $this -> setupResultFromFuzzy($resultArray);
+				return  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
+		  }
+		  
 			array_push($resultArray,$dataArray['course_name']);
 			return  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
 		  }
+		  
 		  
 		  if (mb_strlen($fuzzyString, 'utf-8') == 1 && $type != 'none') {
 			 $dataArray =  $this -> singleWordFuzzySearch($fuzzyString,'current_posts',$type);
@@ -386,7 +397,7 @@
 			$stringB_len = mb_strlen($stringB, 'utf-8');
 			$stringA_arr  = $this-> utf8_str_split ($stringA);
 			$stringB_arr  = $this-> utf8_str_split ($stringB);
-       /*   print_r ($stringA_arr);
+      /*     print_r ($stringA_arr);
 		   echo "</br>";
 		   print_r ($stringB_arr);*/
 		   // if (!$this -> is_chinese($stringB)) return;
@@ -412,7 +423,7 @@
 												   $distance_table[ ($j - 1) * $stringA_len + $i -1 ] + $cost 
 													);
 	            }
-	/*	print_r($distance_table);
+	  /*  print_r($distance_table);
 	    echo "</br>";
 		echo $stringA.":".$stringA_len;
 		echo "</br>";
