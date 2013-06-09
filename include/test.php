@@ -14,12 +14,12 @@ $con = new SSD_DB_Service;
 //$con -> setCourseRate('123456789987654','B1234888',3);
 //$con -> Login('詹肥肥3號', '123456789981234');
 //echo $con -> getCourseID('軟體工程') ;
-//$con -> getCourseName('B1234567');
+echo $con -> getCourseName('B5702S60');
 //echo $con -> getPersonalURL('33','123456789987654');
 //$con -> getRatedCourses('123456789123456');
 //echo $con -> fuzzySearch('C++');
 //$con -> deleteFromCurrentCourse('32');
-echo $con -> fuzzySearch('302');
+//echo $con -> fuzzySearch('302');
 //echo $con -> fuzzySearch('軟工','current_posts','transaction');
 //$con -> getHistory('123456789569874');
 //$con -> setCourseState(18,'processing')

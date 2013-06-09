@@ -200,8 +200,10 @@
 		     $parameterArray = array ('course_ID' => $courseID);
 			 $dataArray = array();
 			 $dataArray = $this->DB->Select('course_info',$parameterArray);
-			//echo $dataArray["course_name"];
-			return $dataArray["course_name"];
+			 if (is_array( reset($dataArray)) ) {
+				return $dataArray[0]["course_name"];
+			}
+			return $dataArray ["course_name"];
 		}
 		
 		function getPersonalURL ($postID, $post_person){
