@@ -317,6 +317,7 @@
 		}
 		
 	
+		
 		function fuzzySearch($fuzzyString , $place = 'course_info' , $type = 'none'){
 		  $dataArray = array();  
 		  $resultArray = array();
@@ -409,16 +410,24 @@
 		  
 		}
 		
-		
+		private function matchOnlyACH($stringA_arr,$stringB_arr , $stringA_len,$stringB_len){
+			$check =0;
+			for ($i = 0 ; $i < $stringA_len ; ++$i ){
+					for ($j = 0 ; $j < $stringB_len ; ++$j ){
+				if ($stringA_arr[$i] == $stringB_arr[$j] ) $check++;
+			}
+			}
+			return $check == 1 ? true:false;
+		}
 		private function compareWithWord($stringA,$stringB){
 			//prepare var
 			$stringA_len = mb_strlen($stringA, 'utf-8');
 			$stringB_len = mb_strlen($stringB, 'utf-8');
 			$stringA_arr  = $this-> utf8_str_split ($stringA);
 			$stringB_arr  = $this-> utf8_str_split ($stringB);
-           print_r ($stringA_arr);
+          /* print_r ($stringA_arr);
 		   echo "</br>";
-		   print_r ($stringB_arr);
+		   print_r ($stringB_arr);*/
 		   // if (!$this -> is_chinese($stringB)) return;
 			
 			$distance_table = array();
@@ -442,18 +451,21 @@
 												   $distance_table[ ($j - 1) * $stringA_len + $i -1 ] + $cost 
 													);
 	            }
-	    print_r($distance_table);
+	  /*  print_r($distance_table);
 	    echo "</br>";
 		echo $stringA.":".$stringA_len;
 		echo "</br>";
 		echo $stringB .":".$stringB_len;
 		echo "</br>";
-        $distance = $distance_table[ $stringA_len * $stringB_len - 1 ];
 		echo "</br>";
-	    echo "dis : " . $distance;
-		echo "</br>-----------------</br>";
-		$distance = $distance_table[ $stringA_len * $stringB_len - 1 ];
-	     return $distance;
+		$distance = $distance_table[ $stringA_len * $stringB_len -1 ];
+		 echo "dis : " . $distance;
+		echo "</br>";*/
+		$distance = $distance_table[ $stringA_len * $stringB_len -1 ];
+		if($this -> matchOnlyACH($stringA_arr,$stringB_arr , $stringA_len,$stringB_len) ) ++$distance;
+		/* echo "dis' : " . $distance;
+		echo "</br>-----------------</br>";*/
+		 return $distance;
 		}
 		return 0;
 		}
