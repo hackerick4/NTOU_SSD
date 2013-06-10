@@ -9,7 +9,7 @@ $con = new SSD_DB_Service;
 //echo $con -> getCourseRate("10");
 //echo $con -> getCurrentCourses(1, 6,'exchange');
 //echo $con -> getCurrentCourses(1, 6,'transaction');
-//echo $con -> postACourse('123456789569874', '135','654');
+echo $con -> postACourse('123456789569874', '654','135');
 //echo $con -> setCourseRate('123456789987654','4',3);
 //$con -> Login('詹肥肥3號', '123456789981234');
 //echo $con -> getCourseID('線性代數') ;

@@ -125,7 +125,11 @@
 			$conditionArray = array('send_course_ID' => $want_recieve_courseID, 'recieve_course_ID' =>$want_send_courseID );
 			$matchCourses = $this -> DB -> Select('current_posts',$conditionArray);
 			if ($matchCourses==1) return 'non-match' ;//找不到
-			else return $matchCourses[0];
+			else {
+				$matchCourses[0]['send_course_ID'] = $this -> getCourseIDUseCN($want_recieve_courseID);
+				$matchCourses[0]['recieve_course_ID'] = $this -> getCourseIDUseCN($want_send_courseID);
+				return $matchCourses[0];
+			}
 		}
 		
 		private function postInExchangeArea($fbID, $want_send_courseID, $want_recieve_courseID){
@@ -182,6 +186,12 @@
 			 
 		}
 		
+		function getCourseIDUseCN($courseNum){ //use courseNum to get the courseID
+			 $parameterArray = array ('courseNum' => $courseNum);
+			 $dataArray = array();
+			 $dataArray = $this->DB->Select('course_info',$parameterArray);
+			return $dataArray['course_ID'];
+		}
 		function getCourseID($courseName){
 		     $parameterArray = array ('course_name' => $courseName);
 			 $dataArray = array();
