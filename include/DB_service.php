@@ -198,7 +198,7 @@
 		     $parameterArray = array ('course_name' => $courseName);
 			 $dataArray = array();
 			 $dataArray = $this->DB->Select('course_info',$parameterArray);
-			 print_r($dataArray);
+			// print_r($dataArray);
 			 $mutiDataArray = array();
 			if (! is_array(reset($dataArray)) ) array_push($mutiDataArray,  array( 'course_ID' => $dataArray['course_ID'], 'courseNum' => $dataArray['courseNum'] , 'teacher' => $dataArray['teacher'], 'courseTime' => $dataArray['course_time']));
 			else {
