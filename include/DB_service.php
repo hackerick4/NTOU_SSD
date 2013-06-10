@@ -355,16 +355,7 @@
 			 $dataArray = $this -> timeSearch($fuzzyString);
 			 $resultArray = array();
 			 //print_r ($dataArray);
-			  if (is_array( reset($dataArray)) ) {
-				foreach  ($dataArray as $row){
-					array_push($resultArray, $this-> getCourseName($row['sendCourseNum']));
-					}
-				//$resultArray = $this -> setupResultFromFuzzy($resultArray);
-				return  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
-		  }
-		  
-			array_push($resultArray, $this-> getCourseName($row['sendCourseNum']));
-			return  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
+			 return  json_encode($dataArray,JSON_UNESCAPED_UNICODE);
 		  }
 		  
 		  
