@@ -198,8 +198,9 @@
 		     $parameterArray = array ('course_name' => $courseName);
 			 $dataArray = array();
 			 $dataArray = $this->DB->Select('course_info',$parameterArray);
+			 print_r($dataArray);
 			 $mutiDataArray = array();
-			if (! is_array(reset($dataArray)) ) array_push($mutiDataArray,  array( 'course_ID' => $row['course_ID'], 'courseNum' => $row['courseNum'] , 'teacher' => $row['teacher'], 'courseTime' => $row['course_time']));
+			if (! is_array(reset($dataArray)) ) array_push($mutiDataArray,  array( 'course_ID' => $dataArray['course_ID'], 'courseNum' => $dataArray['courseNum'] , 'teacher' => $dataArray['teacher'], 'courseTime' => $dataArray['course_time']));
 			else {
 				foreach($dataArray as $row)  array_push($mutiDataArray, array( 'course_ID' => $row['course_ID'], 'courseNum' => $row['courseNum'] , 'teacher' => $row['teacher'], 'courseTime' => $row['course_time']));
 			 }
@@ -415,9 +416,9 @@
 			$stringB_len = mb_strlen($stringB, 'utf-8');
 			$stringA_arr  = $this-> utf8_str_split ($stringA);
 			$stringB_arr  = $this-> utf8_str_split ($stringB);
-      /*     print_r ($stringA_arr);
+           print_r ($stringA_arr);
 		   echo "</br>";
-		   print_r ($stringB_arr);*/
+		   print_r ($stringB_arr);
 		   // if (!$this -> is_chinese($stringB)) return;
 			
 			$distance_table = array();
@@ -441,7 +442,7 @@
 												   $distance_table[ ($j - 1) * $stringA_len + $i -1 ] + $cost 
 													);
 	            }
-	  /*  print_r($distance_table);
+	    print_r($distance_table);
 	    echo "</br>";
 		echo $stringA.":".$stringA_len;
 		echo "</br>";
@@ -450,7 +451,7 @@
         $distance = $distance_table[ $stringA_len * $stringB_len - 1 ];
 		echo "</br>";
 	    echo "dis : " . $distance;
-		echo "</br>-----------------</br>";*/
+		echo "</br>-----------------</br>";
 		$distance = $distance_table[ $stringA_len * $stringB_len - 1 ];
 	     return $distance;
 		}
