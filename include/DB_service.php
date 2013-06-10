@@ -199,9 +199,9 @@
 			 $dataArray = array();
 			 $dataArray = $this->DB->Select('course_info',$parameterArray);
 			 $mutiDataArray = array();
-			if (! is_array(reset($dataArray)) ) array_push($mutiDataArray, array( 'course_ID' => $dataArray['course_ID'], 'courseNum' => $dataArray['courseNum']));
+			if (! is_array(reset($dataArray)) ) array_push($mutiDataArray,  array( 'course_ID' => $row['course_ID'], 'courseNum' => $row['courseNum'] , 'teacher' => $row['teacher'], 'courseTime' => $row['course_time']));
 			else {
-				foreach($dataArray as $row)  array_push($mutiDataArray, array( 'course_ID' => $row['course_ID'], 'courseNum' => $row['courseNum']));
+				foreach($dataArray as $row)  array_push($mutiDataArray, array( 'course_ID' => $row['course_ID'], 'courseNum' => $row['courseNum'] , 'teacher' => $row['teacher'], 'courseTime' => $row['course_time']));
 			 }
 			
 			 return  json_encode($mutiDataArray,JSON_UNESCAPED_UNICODE);
@@ -351,9 +351,10 @@
 		  if (is_array( reset($dataArray)) ) {
 			foreach  ($dataArray as $row){
 			       // print_r($row['course_name']);
-					array_push($resultArray, $row['course_name'] ."[".$row['course_time']."]");
+					array_push($resultArray, $row['course_name']);
 					}
 				//$resultArray = $this -> setupResultFromFuzzy($resultArray);
+				$resultArray = array_unique($resultArray);
 				return  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
 		  }
 		  
@@ -365,9 +366,10 @@
 			  foreach  ($dataArray as $row){
 				$distance= $this->compareWithWord($row['course_name'],$fuzzyString);
 				if (  $distance <= abs(mb_strlen($fuzzyString, 'utf-8') - mb_strlen($row['course_name'], 'utf-8') ) )
-					array_push($resultArray, $row['course_name'] ."[".$row['course_time']."]");
+					array_push($resultArray, $row['course_name']);
 				}
 			//print_r($resultArray);
+			$resultArray = array_unique($resultArray);
 			return json_encode($resultArray,JSON_UNESCAPED_UNICODE);
 		  }
 		  else if ($place == 'current_posts' && $type == 'exchange'){
