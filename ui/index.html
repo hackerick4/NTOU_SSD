@@ -1,0 +1,214 @@
+﻿<html>
+<head>
+        <meta name="viewport" content="width=device-width initial-scale=1" />
+<title>WidgetTest</title>
+<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
+	<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+<script type="text/javascript">
+
+var singerName
+var SingerData;
+var AlbumData;
+var LyricData;
+
+function videoAndLyricDisplay(ID,albumUrl)
+{
+//$("#showText").text(ID);
+//ID.replace(" ","%20");
+var url = "http://gdata.youtube.com/feeds/api/videos?q="+(SingerData.name).replace(new RegExp(" ","gm"),"%20")+"%20"+ID.replace(new RegExp(" ","gm"),"%20")+"&max-results=1&v=2&alt=jsonc";
+var title;
+var description;
+var id;
+/**video Json**/
+$.getJSON(url,
+    function(response){
+        title = response.data.items[0].title;
+        description = response.data.items[0].description;
+		id= response.data.items[0].id;
+		//$("#showVideo").attr("src","http://www.youtube.com/embed/"+id);
+		$("#popupVideo").text("");
+		$("#popupVideo").append("<iframe id='showVideo' src='http://www.youtube.com/embed/"+id+"' width='210' height='160' seamless></iframe>");
+		
+		
+});
+
+$.post("SearchServlet" ,{url:albumUrl,SongName:ID,type:"lyrics"}, function(jsonString) {
+		$("#lyricArea").text(jsonString);
+	});
+		var text = $("#lyricArea").text();
+		text.replace("&nbsp;"," ");
+		text.replace("<br />","\n");
+		text.replace("<p>","\n");
+		text.replace("</p>","\n");
+
+		$("#videoWidget").show();
+		$("#lyricsWidget").show();
+		
+		
+		//$("#lyricArea").append("<h1>Now Playing :"+ID+ "</h1>");
+		$("#lyricArea").trigger("create");
+}
+
+
+
+
+function scale( width, height, padding, border ) {
+    var scrWidth = $( window ).width() - 30,
+        scrHeight = $( window ).height() - 30,
+        ifrPadding = 2 * padding,
+        ifrBorder = 2 * border,
+        ifrWidth = width + ifrPadding + ifrBorder,
+        ifrHeight = height + ifrPadding + ifrBorder,
+        h, w;
+
+    if ( ifrWidth < scrWidth && ifrHeight < scrHeight ) {
+        w = ifrWidth;
+        h = ifrHeight;
+    } else if ( ( ifrWidth / scrWidth ) > ( ifrHeight / scrHeight ) ) {
+        w = scrWidth;
+        h = ( scrWidth / ifrWidth ) * ifrHeight;
+    } else {
+        h = scrHeight;
+        w = ( scrHeight / ifrHeight ) * ifrWidth;
+    }
+
+    return {
+        'width': w - ( ifrPadding + ifrBorder ),
+        'height': h - ( ifrPadding + ifrBorder )
+    };
+};
+
+
+$( document ).on( "pageinit", function() {
+    $( "#popupVideo iframe" )
+        .attr( "width", 0 )
+        .attr( "height", 0 );
+		  
+    $( "#popupVideo" ).on({
+        popupbeforeposition: function() {
+            var size = scale( 200 , 200, 0, 1 ),
+                w = size.width,
+                h = size.height;
+
+            $( "#popupVideo #showVideo" )
+                .attr( "width", w )
+                .attr( "height", h );
+        },
+        popupafterclose: function() {
+            $( "#popupVideo #showVideo" )
+                .attr( "width", 0 )
+                .attr( "height", 0 );
+			
+        }
+    });
+});
+
+
+
+
+function Search()
+{
+	var url="";
+	$("#lyricArea").text("");
+	singerName = $("#SearchId").val();
+
+	$.post("SearchServlet" ,{SearchName:singerName,type:"singer"}, function(jsonString) 
+	{
+		//$("#showText").text(jsonString);
+		$("#songlist").text("");
+		SingerData = JSON.parse ( jsonString );	
+/** Albumslistview create  **/
+			$("#songlist").append("<div data-role='collapsible-set' data-theme='e' data-content-theme='d' id='artistAlbums'></div>");
+		for( var i in SingerData.albums)
+		{
+		/** AlbumsTitle  **/
+			$("div[id='artistAlbums']").append("<div data-role='collapsible' id='artistAlbums"+(parseInt(i,10)+1)+"' ></div>");
+		/** Album Child Node  **/	
+			$("div[id='artistAlbums"+(parseInt(i,10)+1)+"']").append("<h2 id='albumSong" + (parseInt(i,10)+1) + "' onclick='albumSongDisplay(SingerData,"+i+")' value='true'>"+SingerData.albums[i] +"</h2>");
+			$("div[id='artistAlbums"+(parseInt(i,10)+1)+"']").append("<ul data-role='listview' data-filter-theme='c' data-divider-theme='d' id='albumSongList"+(parseInt(i,10)+1)+ "'></ul>");
+		/**將其value設定為第一次設定*/	
+			$("#albumSong" + (parseInt(i,10)+1)).attr('value',true);
+			
+		/** AlbumSong  **/	
+		/*
+			for(var j in SingerData.albums[i].songList)
+			{
+				$("ul[id='albumSongList"+(parseInt(i,10)+1)+"']").append("<li name='songLink' id='"+SingerData.albums[i].songList[j]+"'><a onclick='videoAndLyricDisplay(this.text)' href='#popupVideo' data-rel='popup' >"+SingerData.albums[i].songList[j]+"</a></li>");
+			}			
+		*/
+		}
+		
+/** 第一個widget(歌手資訊部分)的資訊處理  **/
+	/** 清空原本的資料內容 **/	
+		$("#artistImage").text("");
+		$("#artistPersonalInformation").text("");
+	/**   放入新資料   **/	
+		$("#artistPersonalInformation").append("<img src= 'http://t3.gstatic.com/images?q=tbn:ANd9GcQKMYg34MB-X8Fcj6JZPRrV2pLniWZJvIOSstI3llaIC-QriOz8'/>");
+		$("#artistPersonalInformation").append("<h3>Singer:"+singerName +"</h3>");
+
+/** 搜尋結束後，將專輯與歌曲資訊顯示出來  **/		
+		$("#albumList").show();
+		$("#songlist").trigger("create");
+		});
+		
+}
+
+/**當點擊專輯名稱list時，顯示與新增其歌曲內容**/
+
+function albumSongDisplay(SingerData,i)
+{
+	var Album=SingerData.albums[i];	
+	$.post("SearchServlet" ,{singerName:singerName, songName:Album,type:"album"}, function(jsonString) {
+		AlbumData= JSON.parse ( jsonString );
+		
+/**如果他是不第一次設定就直接return*/
+	if($("#albumSong" + (parseInt(i,10)+1)).val()==false) return;
+	/** AlbumSong 第一次設定 **/	
+		//alert(AlbumData.songList[0]);
+		
+		for(var j in AlbumData.songList)
+		{
+			$("ul[id='albumSongList"+(parseInt(i,10)+1)+"']").append("<li name='songLink' id= '"+AlbumData.songList[j]+"' ><a onclick='videoAndLyricDisplay(this.text,AlbumData.albumUrl)' href='#popupVideo' data-rel='popup' >"+AlbumData.songList[j]+"</a></li>");				
+		}
+		
+/**將value設定為已設定*/		
+		$("#albumSong" + (parseInt(i,10)+1)).attr('value',false);
+		$("#songlist").trigger("create");
+	});
+}
+</script>
+</head>
+
+<body>
+<div data-role="page" id="page1">
+    <div data-theme="a" data-role="header">
+        <h3>
+            Publish Application
+        </h3>
+    </div>
+    <div data-role="content">
+        <div data-role="fieldcontain">
+            <label for="textinput1">
+                Please enter your application name:
+            </label>
+            <input name="" id="textinput1" placeholder="" value="" type="text">
+        </div>
+        <div data-role="fieldcontain">
+            <label for="textinput2">
+                Please enter your application type:
+            </label>
+            <input name="" id="textinput2" placeholder="" value="" type="text">
+        </div>
+        <div data-role="fieldcontain">
+            <label for="textarea1">
+                Description
+            </label>
+            <textarea name="" id="textarea1" placeholder=""></textarea>
+        </div>
+        <input type="submit" value="Submit">
+    </div>
+</div>
+</body>
+</html>
