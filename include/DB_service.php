@@ -351,7 +351,7 @@
 		  if (is_array( reset($dataArray)) ) {
 			foreach  ($dataArray as $row){
 			       // print_r($row['course_name']);
-					array_push($resultArray,$row['course_name']);
+					array_push($resultArray, $row['course_name'] ."[".$row['course_time']."]");
 					}
 				//$resultArray = $this -> setupResultFromFuzzy($resultArray);
 				return  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
@@ -365,7 +365,7 @@
 			  foreach  ($dataArray as $row){
 				$distance= $this->compareWithWord($row['course_name'],$fuzzyString);
 				if (  $distance <= abs(mb_strlen($fuzzyString, 'utf-8') - mb_strlen($row['course_name'], 'utf-8') ) )
-					array_push($resultArray, $row['course_name'] ."(".$row['course_time'].") ");
+					array_push($resultArray, $row['course_name'] ."[".$row['course_time']."]");
 				}
 			//print_r($resultArray);
 			return json_encode($resultArray,JSON_UNESCAPED_UNICODE);
