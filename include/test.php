@@ -16,9 +16,10 @@ $con = new SSD_DB_Service;
 //echo $con -> getCourseName('50');
 //echo $con -> getPersonalURL('1','123456789569874');
 //$con -> getRatedCourses('123456789123456');
-echo $con -> fuzzySearch('微積');
+//echo $con -> fuzzySearch('微');
 //$con -> deleteFromCurrentCourse('32');
-//echo $con -> fuzzySearch('302');
+echo $con -> getPersonalURLInEC('32');
+//echo $con -> fuzzySearch('107');
 //echo $con -> fuzzySearch('軟工','current_posts','transaction');
 //$con -> getHistory('123456789569874');
 //$con -> setCourseState(18,'processing')

@@ -215,6 +215,14 @@
 			 return $dataArray ["course_name"];
 		}
 		
+		function getPersonalURLInEC ($postID){
+			 $parameterArray = array ('PostID' => $postID);
+			$dataArray = array();
+			$dataArray = $this->DB->Select('current_posts',$parameterArray);
+		    $post_person = $dataArray['fb_ID'];
+			return 'http://www.facebook.com/profile.php?id='.$post_person;
+		}
+		
 		function getPersonalURL ($postID, $want_person){
 		    $parameterArray = array ('PostID' => $postID);
 			$dataArray = array();
