@@ -85,12 +85,14 @@
 				$dataArray["sendCourseTeacher"] = $this -> getCourseTeacher($dataArray["send_course_ID"]);
 				$dataArray["sendCourseTime"] = $this -> getCourseTime($dataArray["send_course_ID"]);
 				$dataArray["sendCourseNum"] = $dataArray["send_course_ID"];
+				$dataArray["send_course_ID"] = $this -> getCourseIDUseCN ($dataArray["sendCourseNum"]);
 				if ($recieveCourseName){
 					$dataArray["recieveCourseName"] = $recieveCourseName;
 					$dataArray["recieveCourseRate"] = $this -> getCourseRate($dataArray["recieve_course_ID"]);
 					$dataArray["recieveCourseTeacher"] = $this -> getCourseTeacher($dataArray["recieve_course_ID"]);
 					$dataArray["recieveCourseTime"] = $this -> getCourseTime($dataArray["recieve_course_ID"]);
 					$dataArray["recieveCourseNum"] = $dataArray["recieve_course_ID"];
+					$dataArray["recieve_course_ID"] = $this -> getCourseIDUseCN ($dataArray["recieveCourseNum"]);
 					}	
 		}
 			
@@ -231,6 +233,11 @@
 			$parameterArray = array ('fb_ID' => $post_person);
 			$dataArray = array();
 			$dataArray = $this->DB->Select('user',$parameterArray);
+			$increasePointArray = array ('right_point' => $dataArray['right_point']+1);
+			$this -> DB -> Update('user',$increasePointArray,$parameterArray);
+			
+			$dataArray = array();
+			$dataArray = $this->DB->Select('user',$parameterArray);
 			
 			
 			//echo 'http://www.facebook.com/profile.php?id='.$dataArray['fb_ID'];
@@ -264,8 +271,8 @@
 			$this -> fixCurrentResultArray($dataArray);
 			array_push($matchArray,$dataArray);
 		 }
+		  //print_r($matchArray);
 		  return $matchArray;
-		//print_r($matchArray);
 		}
 		
 		private function singleWordFuzzySearch($fuzzySearch,$table ='course_info',$type = 'none'){
@@ -358,7 +365,7 @@
 			  foreach  ($dataArray as $row){
 				$distance= $this->compareWithWord($row['course_name'],$fuzzyString);
 				if (  $distance <= abs(mb_strlen($fuzzyString, 'utf-8') - mb_strlen($row['course_name'], 'utf-8') ) )
-					array_push($resultArray,$row['course_name']);
+					array_push($resultArray, $row['course_name'] ."(".$row['teacher'].") ");
 				}
 			//print_r($resultArray);
 			return json_encode($resultArray,JSON_UNESCAPED_UNICODE);
