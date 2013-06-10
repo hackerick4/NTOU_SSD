@@ -126,11 +126,17 @@
 		    //A換B 需要符合B換A
 			$conditionArray = array('send_course_ID' => $want_recieve_courseID, 'recieve_course_ID' =>$want_send_courseID );
 			$matchCourses = $this -> DB -> Select('current_posts',$conditionArray);
+			//print_r($matchCourses);
 			if ($matchCourses==1) return 'non-match' ;//找不到
-			else {
+			else if(is_array(reset($matchCourses))){
 				$matchCourses[0]['send_course_ID'] = $this -> getCourseIDUseCN($want_recieve_courseID);
 				$matchCourses[0]['recieve_course_ID'] = $this -> getCourseIDUseCN($want_send_courseID);
 				return $matchCourses[0];
+			}
+			else {
+				$matchCourses['send_course_ID'] = $this -> getCourseIDUseCN($want_recieve_courseID);
+				$matchCourses['recieve_course_ID'] = $this -> getCourseIDUseCN($want_send_courseID);
+				return $matchCourses;
 			}
 		}
 		
@@ -277,6 +283,7 @@
 		  foreach ($matchPIDArray  as $PostID){
 			$conditionArray = array ('PostID' => $PostID);
 			$dataArray = $this -> DB -> Select('current_posts' , $conditionArray);
+			//print_r ($dataArray);
 			$this -> fixCurrentResultArray($dataArray);
 			array_push($matchArray,$dataArray);
 		 }
@@ -318,8 +325,20 @@
 			}
 			
 		private function timeSearch($timeString){
-			$conditionArray = array ('course_time' => $timeString);
-			$resultArray = $this -> DB -> Select('course_info',$conditionArray,'','',true);
+		$matchArray = array();
+		 $currentPost=  $this -> DB -> Select('current_posts',array('recieve_course_ID' => 'none'));
+            if (is_array(reset($currentPost))){
+				foreach($currentPost as $row){
+					if ( strstr( $this->getCourseTime( $row['send_course_ID']) , $timeString) ) array_push($matchArray ,$row['PostID'] );
+					else if ( strstr( $this->getCourseTime( $row['recieve_course_ID']) , $timeString) ) array_push($matchArray ,$row['PostID'] );
+				}
+			}
+            else{
+				if ( strstr( $this->getCourseTime( $currentPost['send_course_ID']) , $timeString) ) array_push($matchArray ,$currentPost['PostID'] );
+					else if ( strstr( $this->getCourseTime( $currentPost['recieve_course_ID']) , $timeString) ) array_push($matchArray ,$currentPost['PostID'] );
+			}			
+            //print_r($matchArray);
+			$resultArray = $this ->setupResultFromFuzzy($matchArray);
 			//print_r ($resultArray);
 			return $resultArray;
 		}
@@ -335,16 +354,16 @@
 		  if (is_numeric($fuzzyString[0]) && mb_strlen($fuzzyString, 'utf-8') >= 3) {
 			 $dataArray = $this -> timeSearch($fuzzyString);
 			 $resultArray = array();
+			 //print_r ($dataArray);
 			  if (is_array( reset($dataArray)) ) {
 				foreach  ($dataArray as $row){
-			       // print_r($row['course_name']);
-					array_push($resultArray,$row['course_name']);
+					array_push($resultArray, $this-> getCourseName($row['sendCourseNum']));
 					}
 				//$resultArray = $this -> setupResultFromFuzzy($resultArray);
 				return  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
 		  }
 		  
-			array_push($resultArray,$dataArray['course_name']);
+			array_push($resultArray, $this-> getCourseName($row['sendCourseNum']));
 			return  json_encode($resultArray,JSON_UNESCAPED_UNICODE);
 		  }
 		  
