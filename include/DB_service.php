@@ -197,9 +197,9 @@
 			 $dataArray = array();
 			 $dataArray = $this->DB->Select('course_info',$parameterArray);
 			 $mutiDataArray = array();
-			if (! is_array(reset($dataArray)) ) array_push($mutiDataArray, $dataArray['course_ID']);
+			if (! is_array(reset($dataArray)) ) array_push($mutiDataArray, array( 'course_ID' => $dataArray['course_ID'], 'courseNum' => $dataArray['courseNum']));
 			else {
-				foreach($dataArray as $row)  array_push($mutiDataArray, $row['course_ID']);
+				foreach($dataArray as $row)  array_push($mutiDataArray, array( 'course_ID' => $row['course_ID'], 'courseNum' => $row['courseNum']));
 			 }
 			
 			 return  json_encode($mutiDataArray,JSON_UNESCAPED_UNICODE);
