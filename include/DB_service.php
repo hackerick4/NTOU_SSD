@@ -69,8 +69,8 @@
 			 $dataArray = $this->DB->Select('course_info',$parameterArray);
 			 return  $dataArray["course_time"];
 			}
-		function getCourseTeacher($courseID){
-			  $parameterArray = array ('course_ID' => $courseID);
+		function getCourseTeacher($courseNum){
+			 $parameterArray = array ('courseNum' => $courseNum);
 			 $dataArray = array();
 			 $dataArray = $this->DB->Select('course_info',$parameterArray);
 			 //print_r ($dataArray);
@@ -212,26 +212,27 @@
 			 return $dataArray ["course_name"];
 		}
 		
-		function getPersonalURL ($postID, $post_person){
-		     $parameterArray = array ('PostID' => $postID);
+		function getPersonalURL ($postID, $want_person){
+		    $parameterArray = array ('PostID' => $postID);
 			$dataArray = array();
 			$dataArray = $this->DB->Select('current_posts',$parameterArray);
-		    $want_person = $dataArray['fb_ID'];
-			//print_r($dataArray);
-             if ($want_person == $post_person) return '參數不可相同';
+		    $post_person = $dataArray['fb_ID'];
+			if ($want_person == $post_person) return '參數不可相同';
 		    // 查看post個人網址的人 權力點數需要-1
 		    $parameterArray = array ('fb_ID' => $want_person);
 			$dataArray = array();
 			$dataArray = $this->DB->Select('user',$parameterArray);
-			
+
 			if ($dataArray['right_point']-1 < 0) return '權力點數不足';
 			$decreasePointArray = array ('right_point' => $dataArray['right_point']-1);
 			$decreaseConditionArray = array ('fb_ID' => $want_person);
 			$this -> DB -> Update('user',$decreasePointArray,$decreaseConditionArray);
-			
+
 			$parameterArray = array ('fb_ID' => $post_person);
 			$dataArray = array();
 			$dataArray = $this->DB->Select('user',$parameterArray);
+			
+			
 			//echo 'http://www.facebook.com/profile.php?id='.$dataArray['fb_ID'];
 			return 'http://www.facebook.com/profile.php?id='.$dataArray['fb_ID'];
 		}
